@@ -1,0 +1,31 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go
+{
+	"name": "Public APIs",
+	"image": "mcr.microsoft.com/devcontainers/go:0-1.20",
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {},
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"cSpell.language": "en,en-GB,en-US,lorem",
+				"cSpell.ignorePaths": [
+					".devcontainer",
+					".git/objects"
+				]
+			},
+			"extensions": [
+					"bufbuild.vscode-buf",
+					"peterj.proto",
+					"streetsidesoftware.code-spell-checker",
+					"GitHub.vscode-pull-request-github"
+			]
+		}
+	},
+	
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "./.devcontainer/postCreateCommand.sh"
+}
