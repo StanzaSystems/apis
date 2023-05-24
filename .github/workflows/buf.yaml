@@ -1,0 +1,41 @@
+name: Buf Tests
+on:
+  push:
+    paths:
+      - 'stanza/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: bufbuild/buf-setup-action@v1
+      - uses: bufbuild/buf-lint-action@v1
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            core.info('Checking that formatting was applied...')
+            await exec.exec('buf format -w');
+            let out = '';
+            let listen = (data) => { out += data.toString() }
+            let options = {
+              listeners: {
+                stdout: listen,
+                stderr: listen,
+              }
+            };
+            await exec.exec('git', ['status', '--porcelain'], options)
+            if (out.length > 0) {
+              core.info(out)
+              core.setFailed('Formatting not applied, please run "buf format -w"')
+              return
+            }
+            core.info('Formatting looks good 👍');
+  breaking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: bufbuild/buf-setup-action@v1
+      - uses: bufbuild/buf-breaking-action@v1
+        with:
+          against: 'https://github.com/StanzaSystems/apis.git#branch=main'
