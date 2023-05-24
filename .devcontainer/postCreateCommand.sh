@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 sudo apt-get update
 DEBIAN_FRONTEND=noninteractive \
     sudo apt-get -y install --no-install-recommends \
@@ -8,5 +7,3 @@ DEBIAN_FRONTEND=noninteractive \
 
 go install github.com/bufbuild/buf/cmd/buf@latest
 go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
-
-chown -R vscode: /go
