@@ -1,0 +1,247 @@
+syntax = "proto3";
+package stanza.hub.v1;
+option go_package = "stanza/hub/v1;hubpb";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "stanza/hub/v1/common.proto";
+
+// This protocol buffer definition is the source of truth for the Stanza Hub Quota API.
+// There is also an OpenAPI spec, generated via https://github.com/grpc-ecosystem/grpc-gateway.
+// Config is used by the language-specific Stanza SDKs and Browser SDK to fetch Service and Feature configurations
+//   DecoratorConfig: Decorator level configuration ()
+//   BrowserContext: Whether Feature is enabled or disabled, has centralized ratelimiting, etc
+//   ServiceConfig: Service level configuration (OTEL defaults, Sentinel configs, etc)
+
+// The Config service definition.
+// This service is used by the Stanza SDK to get Service and Decorator configs.
+// This service is used by the Browser SDK to get Browser Contexts.
+service ConfigService {
+  rpc GetDecoratorConfig(GetDecoratorConfigRequest) returns (GetDecoratorConfigResponse) {
+    option (google.api.http) = {get: "/v1/config/decorator"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get decorator config"
+      description: "Get decorator config from Stanza Hub."
+      tags: "SDK Configuration"
+    };
+  }
+  rpc GetBrowserContext(GetBrowserContextRequest) returns (GetBrowserContextResponse) {
+    option (google.api.http) = {get: "/v1/context/browser"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get browser context"
+      description: "Get browser context from Stanza Hub."
+      responses: {
+        key: "304"
+        value: {description: "OK, Not Modified."}
+      }
+      tags: "Browser Context"
+    };
+  }
+  rpc GetServiceConfig(GetServiceConfigRequest) returns (GetServiceConfigResponse) {
+    option (google.api.http) = {get: "/v1/config/service"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get service config"
+      description: "Get service config from Stanza Hub."
+      tags: "SDK Configuration"
+    };
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// DECORATOR
+//
+///////////////////////////////////////////////////////////////////////////////
+
+// GetDecoratorConfigRequest is the request from Backend SDKs to Hub for an decorator's config.
+// SDKs are expected to periodically poll, giving the version of the most recent configuration seen.
+// Configurations may be large; we will not re-send them unless they have changed.
+//
+// Decorator configurations may vary between envs.
+// Decorator configurations are SHARED between Services, but may be overridden for specific Services,
+// (or Service+Release versions).
+//
+// Required Header: X-Stanza-Key
+message GetDecoratorConfigRequest {
+  // Set if the client has seen a previous version of the config. Server will send data only if newer config available.
+  optional string version_seen = 1;
+
+  // Information required to select and return the correct DecoratorConfig version.
+  DecoratorServiceSelector s = 2;
+}
+
+// GetDecoratorConfigResponse is the response from Hub to Backend SDKs.
+// Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config
+// version than `version_seen`.
+message GetDecoratorConfigResponse {
+  string version = 1;
+  bool config_data_sent = 2;
+  DecoratorConfig config = 3;
+}
+
+// DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator,
+//    which may be used by multiple services!
+// If trace_config is empty, no per-decorator trace configuration is applied. Service-level
+//    trace configuration will be used (if applicable).
+// If check_quota is false, then no ratelimiting will be performed. All quota requests will
+//    succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.
+// At a later point (post V0), there will be additional per-decorator configuration, such as
+//   deadline overrides, adaptive circuitbreaking configs, etc.
+message DecoratorConfig {
+  bool validate_ingress_tokens = 1; // Boolean representing wether to validate contents of the X-Stanza-Token header.
+
+  // Quota
+  bool check_quota = 5; // Boolean representing whether quota checks are enabled.
+  repeated string quota_tags = 6; // The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests.
+
+  // OTEL
+  optional TraceConfig trace_config = 8;
+  optional MetricConfig metric_config = 9;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// FEATURE
+//
+///////////////////////////////////////////////////////////////////////////////
+
+// GetBrowserContextRequest is the request from Browser SDKs to Hub for a browser config.
+// SDKs are expected to periodically poll, giving the version of the most recent configuration seen.
+// Configurations may be large; we will not re-send them unless they have changed.
+// If no feature_names are specified, all Features belonging to the organisation will be returned.
+// Required Header: X-Stanza-Key
+// Optional Header: etag
+message GetBrowserContextRequest {
+  // Information required to select and return the most recent BrowserContext version
+  // If Feature names is nil, will return all Features in the organisation associated with the bearer
+  // token/API key, otherwise only information related to the named Features will be returned.
+  FeatureSelector feature = 1;
+}
+
+// GetBrowserConfigResponse is the response from Hub to Browser SDKs.
+// It is designed to be cacheable for short periods. It is also designed to be
+// shareable between multiple clients (e.g. in case of SSR or use of CDN etc).
+// Returns etag header.
+// May return 304 Not Modified with etag header and empty payload.
+message GetBrowserContextResponse {
+  repeated FeatureConfig feature_configs = 2;
+}
+
+message FeatureConfig {
+  string name = 1;
+  BrowserConfig config = 2;
+}
+
+// BrowserConfig describes the current configuration for one Feature.
+// Instead of being simply enabled or disabled, features are enabled for a
+// particular percentage of clients (0% is entirely disabled, 100% is entirely enabled).
+// Clients are required to self-select a percentile value from 1 to 100 in a way that is random
+// and trusted to consider a Feature disabled if it is disabled for the selected percentile.
+// action_code_disabled describes what the Browser is expected to do if the Feature is not enabled for
+// their assigned percentile.
+// message_disabled may be displayed as a fallback action.
+// action_code_enabled describes what the Browser is expected to do if the Feature is enabled for
+// their assigned percentile. This enabled degraded modes. Can be empty.
+// message_enabled may be displayed while in degraded mode. Can be empty.
+// Likely additional fields will be added here as the Browser SDK behavior set becomes more complex.
+message BrowserConfig {
+  optional uint32 enabled_percent = 2;
+  optional uint32 action_code_enabled = 3;
+  optional string message_enabled = 4;
+  optional uint32 action_code_disabled = 5;
+  optional string message_disabled = 6;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// SERVICE
+//
+///////////////////////////////////////////////////////////////////////////////
+
+// GetServiceConfigRequest is the request from Backend SDKs to Hub for a service config.
+// SDKs are expected to periodically poll, giving the version of the most recent configuration seen.
+// Configurations may be large; we will not re-send them unless they have changed.
+//
+// Required Header: X-Stanza-Key
+message GetServiceConfigRequest {
+  // Set if the client has seen a previous version of the config. Server will send data only if newer config available.
+  string version_seen = 1;
+
+  // Information required to select and return the most recent ServiceConfig version
+  ServiceSelector service = 2;
+}
+
+// GetServiceConfigResponse is the response from Hub to Backend SDKs.
+// Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config
+// version than `version_seen`.
+message GetServiceConfigResponse {
+  string version = 1;
+  bool config_data_sent = 2;
+  ServiceConfig config = 3;
+}
+
+// ServiceConfig represents a configuration for a given Stanza SDK instrumented service.
+message ServiceConfig {
+  optional TraceConfig trace_config = 3;
+  optional MetricConfig metric_config = 4;
+  optional SentinelConfig sentinel_config = 5;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// SHARED
+//
+///////////////////////////////////////////////////////////////////////////////
+
+message TraceConfig {
+  optional string collector_url = 1; // url of OTEL collector - grpc
+  optional string collector_key = 2; // send as x-stanza-key header
+  optional float sample_rate_default = 3; // default base sampling rate
+  repeated TraceConfigOverride overrides = 4; // span sampling rate overrides
+  repeated HeaderTraceConfig header_sample_configs = 5; // which headers to capture
+  repeated ParamTraceConfig param_sample_configs = 6; // which parameters to capture
+  optional string collector_url_http = 7; // url of OTEL collector - HTTP
+}
+
+message MetricConfig {
+  optional string collector_url = 1; // url of OTEL collector - grpc
+  optional string collector_key = 2; // send as x-stanza-key header
+  optional string collector_url_http = 3; // url of OTEL collector - HTTP
+}
+
+// SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types.
+// These rules are "per service" (not per Decorator) with Decorator specific routing encoded in
+// the given JSON blobs (as Sentinel "Resources").
+message SentinelConfig {
+  optional string circuitbreaker_rules_json = 1;
+  optional string flow_rules_json = 2;
+  optional string isolation_rules_json = 3;
+  optional string system_rules_json = 4;
+}
+
+// This configuration allows different sample rates to be applied to selected spans.
+message TraceConfigOverride {
+  float sample_rate = 1;
+  repeated SpanSelector span_selectors = 2;
+}
+
+message SpanSelector {
+  // OTel attribute, e.g. peer.service, status, http.status_code. See:
+  // https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/
+  // https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/
+  string otel_attribute = 1;
+  string value = 2; // Selector matches if value of 'otel_attribute' equals 'value'.
+}
+
+// Specifies which headers should be sampled - required by OTel spec.
+message HeaderTraceConfig {
+  repeated SpanSelector span_selectors = 1; // If no selectors specified then config is applied to all requests
+  repeated string request_header_names = 2; // Names of headers to collect
+  repeated string response_header_names = 3; // Names of headers to collect
+}
+
+// Specifies which request parameters should be sampled.
+message ParamTraceConfig {
+  repeated SpanSelector span_selectors = 1; // If no selectors specified then config is applied to all requests
+  repeated string parameter_names = 2; // Names of parameters to collect
+}
