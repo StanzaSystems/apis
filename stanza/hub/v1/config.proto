@@ -24,12 +24,6 @@ service ConfigService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get decorator config"
       description: "Get decorator config from Stanza Hub."
-      security: {
-        security_requirement: {
-          key: "ApiKeyAuth";
-          value: {}
-        }
-      }
       responses: {
         key: "200"
         value: {
