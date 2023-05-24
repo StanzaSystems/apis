@@ -6,13 +6,13 @@
   },
   "tags": [
     {
-      "name": "stanza.hub.v1.ConfigService"
+      "name": "ConfigService"
     },
     {
-      "name": "stanza.hub.v1.HealthService"
+      "name": "HealthService"
     },
     {
-      "name": "stanza.hub.v1.QuotaService"
+      "name": "QuotaService"
     }
   ],
   "schemes": [
@@ -31,6 +31,16 @@
         "description": "Get decorator config from Stanza Hub.",
         "operationId": "ConfigService_GetDecoratorConfig",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1GetDecoratorConfigResponse"
+            }
+          },
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -72,7 +82,12 @@
           }
         ],
         "tags": [
-          "SDK Configuration"
+          "ConfigService"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ]
       }
     },
@@ -82,6 +97,16 @@
         "description": "Get service config from Stanza Hub.",
         "operationId": "ConfigService_GetServiceConfig",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1GetServiceConfigResponse"
+            }
+          },
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -117,7 +142,7 @@
           }
         ],
         "tags": [
-          "SDK Configuration"
+          "ConfigService"
         ]
       }
     },
@@ -127,8 +152,30 @@
         "description": "Get browser context from Stanza Hub.",
         "operationId": "ConfigService_GetBrowserContext",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1GetBrowserContextResponse"
+            },
+            "headers": {
+              "Etag": {
+                "description": "Unique entity identifier for this specific resource version.",
+                "type": "string"
+              }
+            }
+          },
           "304": {
             "description": "OK, Not Modified.",
+            "schema": {},
+            "headers": {
+              "Etag": {
+                "description": "Unique entity identifier for this specific resource version.",
+                "type": "string"
+              }
+            }
+          },
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
             "schema": {}
           },
           "default": {
@@ -157,7 +204,7 @@
           }
         ],
         "tags": [
-          "Browser Context"
+          "ConfigService"
         ]
       }
     },
@@ -167,6 +214,12 @@
         "description": "Used by SDK to allow developers to make decisions about graceful degradation of backend services.",
         "operationId": "HealthService_QueryDecoratorHealth",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1QueryDecoratorHealthResponse"
+            }
+          },
           "429": {
             "description": "Unable to service request, try again after Retry-After.",
             "schema": {}
@@ -199,7 +252,7 @@
           },
           {
             "name": "priorityBoost",
-            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier.\n Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
+            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -207,7 +260,7 @@
           }
         ],
         "tags": [
-          "stanza.hub.v1.HealthService"
+          "HealthService"
         ]
       }
     },
@@ -217,6 +270,12 @@
         "description": "Inform stanza that one or more quota tokens were consumed.",
         "operationId": "QuotaService_SetTokenLeaseConsumed",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1SetTokenLeaseConsumedResponse"
+            }
+          },
           "429": {
             "description": "Unable to service request, try again after Retry-After.",
             "schema": {}
@@ -241,7 +300,7 @@
           },
           {
             "name": "weightCorrection",
-            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not\n  known before request execution, then a default or estimated weight may be used, followed by a corrected\n  value here. The value sent here should be the actual request weight.\n  This field is optional.",
+            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not known before request execution, then a default or estimated weight may be used, followed by a corrected value here. If a value is sent here, it should be the actual request weight.",
             "in": "query",
             "required": false,
             "type": "number",
@@ -249,7 +308,7 @@
           }
         ],
         "tags": [
-          "stanza.hub.v1.QuotaService"
+          "QuotaService"
         ]
       }
     },
@@ -259,6 +318,12 @@
         "description": "Get a set of token leases from Stanza Hub for access to given Decorator (optional Feature name for priority).",
         "operationId": "QuotaService_GetTokenLease",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1GetTokenLeaseResponse"
+            }
+          },
           "429": {
             "description": "Unable to service request, try again after Retry-After.",
             "schema": {}
@@ -291,14 +356,14 @@
           },
           {
             "name": "clientId",
-            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases.\nID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or\n  a UUID.",
+            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "priorityBoost",
-            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier.\n Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
+            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -306,7 +371,7 @@
           },
           {
             "name": "defaultWeight",
-            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the\n  default request weight which should be assumed for leases. If not specified, then the median weight is\n  used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.\n  default_weight is optional; if not used then it is assumed that all requests have weight of 1.",
+            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the default request weight which should be assumed for leases. If not specified, then the median weight is used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.\n\ndefault_weight is optional; if not used then it is assumed that all requests have weight of 1.",
             "in": "query",
             "required": false,
             "type": "number",
@@ -314,7 +379,7 @@
           }
         ],
         "tags": [
-          "stanza.hub.v1.QuotaService"
+          "QuotaService"
         ]
       }
     },
@@ -324,6 +389,12 @@
         "description": "Get a token from Stanza Hub for access to given Decorator (optional Feature name for priority).",
         "operationId": "QuotaService_GetToken",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1GetTokenResponse"
+            }
+          },
           "429": {
             "description": "Unable to service request, try again after Retry-After.",
             "schema": {}
@@ -356,14 +427,14 @@
           },
           {
             "name": "clientId",
-            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases.\nID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or\n  a UUID.",
+            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "priorityBoost",
-            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier.\n Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
+            "description": "Used to increase or decrease priority of request, relative to normal feature priority.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -371,7 +442,7 @@
           },
           {
             "name": "weight",
-            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default\n  value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate\n  as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.\n  weight is optional; if not used then it is assumed that all requests have weight of 1.",
+            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.\n\nweight is optional; if not used then it is assumed that all requests have weight of 1.",
             "in": "query",
             "required": false,
             "type": "number",
@@ -379,7 +450,7 @@
           }
         ],
         "tags": [
-          "stanza.hub.v1.QuotaService"
+          "QuotaService"
         ]
       }
     },
@@ -389,6 +460,12 @@
         "description": "Validate one or more tokens.",
         "operationId": "QuotaService_ValidateToken",
         "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1ValidateTokenResponse"
+            }
+          },
           "429": {
             "description": "Unable to service request, try again after Retry-After.",
             "schema": {}
@@ -415,7 +492,7 @@
           }
         ],
         "tags": [
-          "stanza.hub.v1.QuotaService"
+          "QuotaService"
         ]
       }
     }
@@ -511,7 +588,7 @@
           "$ref": "#/definitions/v1MetricConfig"
         }
       },
-      "description": "DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator,\n   which may be used by multiple services!\nIf trace_config is empty, no per-decorator trace configuration is applied. Service-level\n   trace configuration will be used (if applicable).\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will\n   succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point (post V0), there will be additional per-decorator configuration, such as\n  deadline overrides, adaptive circuitbreaking configs, etc."
+      "description": "DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator, which may be used by multiple services!\nIf trace_config is empty, no per-decorator trace configuration is applied. Service-level trace configuration will be used (if applicable).\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point (post V0), there will be additional per-decorator configuration, such as deadline overrides, adaptive circuitbreaking configs, etc."
     },
     "v1DecoratorFeatureSelector": {
       "type": "object",
@@ -636,7 +713,7 @@
           }
         }
       },
-      "description": "GetBrowserConfigResponse is the response from Hub to Browser SDKs.\nIt is designed to be cacheable for short periods. It is also designed to be\nshareable between multiple clients (e.g. in case of SSR or use of CDN etc).\nReturns etag header.\nMay return 304 Not Modified with etag header and empty payload."
+      "description": "GetBrowserConfigResponse is the response from Hub to Browser SDKs. It is designed to be cacheable for short periods. It is also designed to be shareable between multiple clients (e.g. in case of SSR or use of CDN etc).\n\nReturns etag header.\n\nMay return 304 Not Modified with etag header and empty payload."
     },
     "v1GetDecoratorConfigResponse": {
       "type": "object",
@@ -666,7 +743,7 @@
           "$ref": "#/definitions/v1ServiceConfig"
         }
       },
-      "description": "GetServiceConfigResponse is the response from Hub to Backend SDKs.\nNote that `config_data_sent` will be false and `config` will be empty if we did not have a newer config\nversion than `version_seen`."
+      "description": "GetServiceConfigResponse is the response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`."
     },
     "v1GetTokenLeaseResponse": {
       "type": "object",
@@ -773,8 +850,7 @@
         "health": {
           "$ref": "#/definitions/v1Health"
         }
-      },
-      "title": "HEALTH_UNSPECIFIED = 0; HEALTH_OK = 1; HEALTH_OVERLOAD = 2; HEALTH_DOWN = 3;"
+      }
     },
     "v1SentinelConfig": {
       "type": "object",
@@ -792,7 +868,7 @@
           "type": "string"
         }
       },
-      "description": "SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types.\nThese rules are \"per service\" (not per Decorator) with Decorator specific routing encoded in\nthe given JSON blobs (as Sentinel \"Resources\")."
+      "description": "SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types. These rules are \"per service\" (not per Decorator) with Decorator specific routing encoded in the given JSON blobs (as Sentinel \"Resources\")."
     },
     "v1ServiceConfig": {
       "type": "object",
@@ -977,7 +1053,19 @@
           }
         }
       },
-      "description": "Specified whether tokens were valid."
+      "description": "Specifies whether tokens were valid or not."
     }
-  }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "X-Stanza-Key",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
 }
