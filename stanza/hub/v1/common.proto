@@ -1,0 +1,79 @@
+syntax = "proto3";
+package stanza.hub.v1;
+option go_package = "stanza/hub/v1;hubpb";
+
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Stanza Hub API",
+    version: "1.0"
+  };
+  schemes: HTTPS;
+  consumes: "application/json";
+  produces: "application/json";
+};
+
+message DecoratorSelector {
+  string environment = 1 [(google.api.field_behavior) = REQUIRED];
+  string name = 2 [(google.api.field_behavior) = REQUIRED];
+  repeated Tag tags = 6;
+}
+
+message FeatureSelector {
+  string environment = 1 [(google.api.field_behavior) = REQUIRED];
+  repeated string names = 2;
+  repeated Tag tags = 6;
+}
+
+message DecoratorFeatureSelector {
+  string environment = 1 [(google.api.field_behavior) = REQUIRED];
+  string decorator_name = 2 [(google.api.field_behavior) = REQUIRED];
+  optional string feature_name = 3;
+  repeated Tag tags = 6;
+}
+
+message DecoratorServiceSelector {
+  string environment = 1 [(google.api.field_behavior) = REQUIRED];
+  string decorator_name = 2 [(google.api.field_behavior) = REQUIRED];
+  string service_name = 3 [(google.api.field_behavior) = REQUIRED];
+  string service_release = 4 [(google.api.field_behavior) = REQUIRED];
+  repeated Tag tags = 6;
+}
+
+message ServiceSelector {
+  string environment = 1 [(google.api.field_behavior) = REQUIRED];
+  string name = 2 [(google.api.field_behavior) = REQUIRED];
+  optional string release = 3;
+  repeated Tag tags = 6;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Health, State, and Tags
+//
+///////////////////////////////////////////////////////////////////////////////
+
+enum Health {
+  HEALTH_UNSPECIFIED = 0;
+  HEALTH_OK = 1;
+  HEALTH_OVERLOAD = 2;
+  HEALTH_DOWN = 3;
+}
+
+message HealthByPriority {
+  uint32 priority = 1;
+  Health health = 2;
+}
+
+enum State {
+  STATE_UNSPECIFIED = 0;
+  STATE_ENABLED = 1;
+  STATE_DISABLED = 2;
+}
+
+message Tag {
+  string key = 1;
+  string value = 2;
+}

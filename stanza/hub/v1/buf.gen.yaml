@@ -1,0 +1,7 @@
+version: v1
+managed:
+  enabled: true
+plugins:
+  - plugin: buf.build/grpc-ecosystem/openapiv2
+    out: openapiv2
+    opt: omit_enum_default_value=true,disable_default_responses=true,include_package_in_tags=true,allow_merge=true,merge_file_name=hub

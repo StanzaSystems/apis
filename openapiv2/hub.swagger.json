@@ -1,0 +1,983 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Stanza Hub API",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "stanza.hub.v1.ConfigService"
+    },
+    {
+      "name": "stanza.hub.v1.HealthService"
+    },
+    {
+      "name": "stanza.hub.v1.QuotaService"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/config/decorator": {
+      "get": {
+        "summary": "Get decorator config",
+        "description": "Get decorator config from Stanza Hub.",
+        "operationId": "ConfigService_GetDecoratorConfig",
+        "responses": {
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "versionSeen",
+            "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "s.environment",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.decoratorName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.serviceName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.serviceRelease",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SDK Configuration"
+        ]
+      }
+    },
+    "/v1/config/service": {
+      "get": {
+        "summary": "Get service config",
+        "description": "Get service config from Stanza Hub.",
+        "operationId": "ConfigService_GetServiceConfig",
+        "responses": {
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "versionSeen",
+            "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "service.environment",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "service.name",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "service.release",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SDK Configuration"
+        ]
+      }
+    },
+    "/v1/context/browser": {
+      "get": {
+        "summary": "Get browser context",
+        "description": "Get browser context from Stanza Hub.",
+        "operationId": "ConfigService_GetBrowserContext",
+        "responses": {
+          "304": {
+            "description": "OK, Not Modified.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "feature.environment",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "feature.names",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "Browser Context"
+        ]
+      }
+    },
+    "/v1/health/decorator": {
+      "get": {
+        "summary": "Get decorator health information.",
+        "description": "Used by SDK to allow developers to make decisions about graceful degradation of backend services.",
+        "operationId": "HealthService_QueryDecoratorHealth",
+        "responses": {
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "s.environment",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.decoratorName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.featureName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "priorityBoost",
+            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier.\n Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "stanza.hub.v1.HealthService"
+        ]
+      }
+    },
+    "/v1/quota/consumed": {
+      "post": {
+        "summary": "Inform stanza that quota tokens were consumed",
+        "description": "Inform stanza that one or more quota tokens were consumed.",
+        "operationId": "QuotaService_SetTokenLeaseConsumed",
+        "responses": {
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tokens",
+            "in": "query",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "weightCorrection",
+            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not\n  known before request execution, then a default or estimated weight may be used, followed by a corrected\n  value here. The value sent here should be the actual request weight.\n  This field is optional.",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          }
+        ],
+        "tags": [
+          "stanza.hub.v1.QuotaService"
+        ]
+      }
+    },
+    "/v1/quota/lease": {
+      "post": {
+        "summary": "Get one or more access token leases",
+        "description": "Get a set of token leases from Stanza Hub for access to given Decorator (optional Feature name for priority).",
+        "operationId": "QuotaService_GetTokenLease",
+        "responses": {
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "s.environment",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.decoratorName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.featureName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "clientId",
+            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases.\nID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or\n  a UUID.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "priorityBoost",
+            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier.\n Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "defaultWeight",
+            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the\n  default request weight which should be assumed for leases. If not specified, then the median weight is\n  used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.\n  default_weight is optional; if not used then it is assumed that all requests have weight of 1.",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          }
+        ],
+        "tags": [
+          "stanza.hub.v1.QuotaService"
+        ]
+      }
+    },
+    "/v1/quota/token": {
+      "post": {
+        "summary": "Get an access token",
+        "description": "Get a token from Stanza Hub for access to given Decorator (optional Feature name for priority).",
+        "operationId": "QuotaService_GetToken",
+        "responses": {
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "s.environment",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.decoratorName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s.featureName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "clientId",
+            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases.\nID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or\n  a UUID.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "priorityBoost",
+            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier.\n Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "weight",
+            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default\n  value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate\n  as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.\n  weight is optional; if not used then it is assumed that all requests have weight of 1.",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          }
+        ],
+        "tags": [
+          "stanza.hub.v1.QuotaService"
+        ]
+      }
+    },
+    "/v1/quota/validatetokens": {
+      "post": {
+        "summary": "Validate one or more tokens",
+        "description": "Validate one or more tokens.",
+        "operationId": "QuotaService_ValidateToken",
+        "responses": {
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tokens",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/v1TokenInfo"
+              }
+            }
+          }
+        ],
+        "tags": [
+          "stanza.hub.v1.QuotaService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "hubv1Tag": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1BrowserConfig": {
+      "type": "object",
+      "properties": {
+        "enabledPercent": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "actionCodeEnabled": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "messageEnabled": {
+          "type": "string"
+        },
+        "actionCodeDisabled": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "messageDisabled": {
+          "type": "string"
+        }
+      },
+      "description": "BrowserConfig describes the current configuration for one Feature.\nInstead of being simply enabled or disabled, features are enabled for a\nparticular percentage of clients (0% is entirely disabled, 100% is entirely enabled).\nClients are required to self-select a percentile value from 1 to 100 in a way that is random\nand trusted to consider a Feature disabled if it is disabled for the selected percentile.\naction_code_disabled describes what the Browser is expected to do if the Feature is not enabled for\ntheir assigned percentile.\nmessage_disabled may be displayed as a fallback action.\naction_code_enabled describes what the Browser is expected to do if the Feature is enabled for\ntheir assigned percentile. This enabled degraded modes. Can be empty.\nmessage_enabled may be displayed while in degraded mode. Can be empty.\nLikely additional fields will be added here as the Browser SDK behavior set becomes more complex."
+    },
+    "v1DecoratorConfig": {
+      "type": "object",
+      "properties": {
+        "validateIngressTokens": {
+          "type": "boolean",
+          "description": "Boolean representing wether to validate contents of the X-Stanza-Token header."
+        },
+        "checkQuota": {
+          "type": "boolean",
+          "description": "Boolean representing whether quota checks are enabled.",
+          "title": "Quota"
+        },
+        "quotaTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests."
+        },
+        "traceConfig": {
+          "$ref": "#/definitions/v1TraceConfig",
+          "title": "OTEL"
+        },
+        "metricConfig": {
+          "$ref": "#/definitions/v1MetricConfig"
+        }
+      },
+      "description": "DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator,\n   which may be used by multiple services!\nIf trace_config is empty, no per-decorator trace configuration is applied. Service-level\n   trace configuration will be used (if applicable).\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will\n   succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point (post V0), there will be additional per-decorator configuration, such as\n  deadline overrides, adaptive circuitbreaking configs, etc."
+    },
+    "v1DecoratorFeatureSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "decoratorName": {
+          "type": "string"
+        },
+        "featureName": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "decoratorName"
+      ]
+    },
+    "v1DecoratorSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "name"
+      ]
+    },
+    "v1DecoratorServiceSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "decoratorName": {
+          "type": "string"
+        },
+        "serviceName": {
+          "type": "string"
+        },
+        "serviceRelease": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "decoratorName",
+        "serviceName",
+        "serviceRelease"
+      ]
+    },
+    "v1FeatureConfig": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/v1BrowserConfig"
+        }
+      }
+    },
+    "v1FeatureSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment"
+      ]
+    },
+    "v1GetBrowserContextResponse": {
+      "type": "object",
+      "properties": {
+        "featureConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1FeatureConfig"
+          }
+        }
+      },
+      "description": "GetBrowserConfigResponse is the response from Hub to Browser SDKs.\nIt is designed to be cacheable for short periods. It is also designed to be\nshareable between multiple clients (e.g. in case of SSR or use of CDN etc).\nReturns etag header.\nMay return 304 Not Modified with etag header and empty payload."
+    },
+    "v1GetDecoratorConfigResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "configDataSent": {
+          "type": "boolean"
+        },
+        "config": {
+          "$ref": "#/definitions/v1DecoratorConfig"
+        }
+      },
+      "description": "GetDecoratorConfigResponse is the response from Hub to Backend SDKs.\nNote that `config_data_sent` will be false and `config` will be empty if we did not have a newer config\nversion than `version_seen`."
+    },
+    "v1GetServiceConfigResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "configDataSent": {
+          "type": "boolean"
+        },
+        "config": {
+          "$ref": "#/definitions/v1ServiceConfig"
+        }
+      },
+      "description": "GetServiceConfigResponse is the response from Hub to Backend SDKs.\nNote that `config_data_sent` will be false and `config` will be empty if we did not have a newer config\nversion than `version_seen`."
+    },
+    "v1GetTokenLeaseResponse": {
+      "type": "object",
+      "properties": {
+        "leases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TokenLease"
+          }
+        }
+      },
+      "title": "Specifies tokens granted and their duration (may be empty if none granted)"
+    },
+    "v1GetTokenResponse": {
+      "type": "object",
+      "properties": {
+        "granted": {
+          "type": "boolean"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "description": "Specifies whether token granted."
+    },
+    "v1HeaderTraceConfig": {
+      "type": "object",
+      "properties": {
+        "spanSelectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SpanSelector"
+          },
+          "title": "If no selectors specified then config is applied to all requests"
+        },
+        "requestHeaderNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Names of headers to collect"
+        },
+        "responseHeaderNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Names of headers to collect"
+        }
+      },
+      "description": "Specifies which headers should be sampled - required by OTel spec."
+    },
+    "v1Health": {
+      "type": "string",
+      "enum": [
+        "HEALTH_OK",
+        "HEALTH_OVERLOAD",
+        "HEALTH_DOWN"
+      ]
+    },
+    "v1MetricConfig": {
+      "type": "object",
+      "properties": {
+        "collectorUrl": {
+          "type": "string",
+          "title": "url of OTEL collector - grpc"
+        },
+        "collectorKey": {
+          "type": "string",
+          "title": "send as x-stanza-key header"
+        },
+        "collectorUrlHttp": {
+          "type": "string",
+          "title": "url of OTEL collector - HTTP"
+        }
+      }
+    },
+    "v1ParamTraceConfig": {
+      "type": "object",
+      "properties": {
+        "spanSelectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SpanSelector"
+          },
+          "title": "If no selectors specified then config is applied to all requests"
+        },
+        "parameterNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Names of parameters to collect"
+        }
+      },
+      "description": "Specifies which request parameters should be sampled."
+    },
+    "v1QueryDecoratorHealthResponse": {
+      "type": "object",
+      "properties": {
+        "health": {
+          "$ref": "#/definitions/v1Health"
+        }
+      },
+      "title": "HEALTH_UNSPECIFIED = 0; HEALTH_OK = 1; HEALTH_OVERLOAD = 2; HEALTH_DOWN = 3;"
+    },
+    "v1SentinelConfig": {
+      "type": "object",
+      "properties": {
+        "circuitbreakerRulesJson": {
+          "type": "string"
+        },
+        "flowRulesJson": {
+          "type": "string"
+        },
+        "isolationRulesJson": {
+          "type": "string"
+        },
+        "systemRulesJson": {
+          "type": "string"
+        }
+      },
+      "description": "SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types.\nThese rules are \"per service\" (not per Decorator) with Decorator specific routing encoded in\nthe given JSON blobs (as Sentinel \"Resources\")."
+    },
+    "v1ServiceConfig": {
+      "type": "object",
+      "properties": {
+        "traceConfig": {
+          "$ref": "#/definitions/v1TraceConfig"
+        },
+        "metricConfig": {
+          "$ref": "#/definitions/v1MetricConfig"
+        },
+        "sentinelConfig": {
+          "$ref": "#/definitions/v1SentinelConfig"
+        }
+      },
+      "description": "ServiceConfig represents a configuration for a given Stanza SDK instrumented service."
+    },
+    "v1ServiceSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "release": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "name"
+      ]
+    },
+    "v1SetTokenLeaseConsumedResponse": {
+      "type": "object",
+      "title": "No message contents yet"
+    },
+    "v1SpanSelector": {
+      "type": "object",
+      "properties": {
+        "otelAttribute": {
+          "type": "string",
+          "title": "OTel attribute, e.g. peer.service, status, http.status_code. See:\nhttps://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/\nhttps://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/"
+        },
+        "value": {
+          "type": "string",
+          "description": "Selector matches if value of 'otel_attribute' equals 'value'."
+        }
+      }
+    },
+    "v1TokenInfo": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "decorator": {
+          "$ref": "#/definitions/v1DecoratorSelector"
+        }
+      },
+      "required": [
+        "token"
+      ]
+    },
+    "v1TokenLease": {
+      "type": "object",
+      "properties": {
+        "durationMsec": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "token": {
+          "type": "string"
+        },
+        "feature": {
+          "type": "string"
+        },
+        "priorityBoost": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "v1TokenValid": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "valid": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1TraceConfig": {
+      "type": "object",
+      "properties": {
+        "collectorUrl": {
+          "type": "string",
+          "title": "url of OTEL collector - grpc"
+        },
+        "collectorKey": {
+          "type": "string",
+          "title": "send as x-stanza-key header"
+        },
+        "sampleRateDefault": {
+          "type": "number",
+          "format": "float",
+          "title": "default base sampling rate"
+        },
+        "overrides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TraceConfigOverride"
+          },
+          "title": "span sampling rate overrides"
+        },
+        "headerSampleConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1HeaderTraceConfig"
+          },
+          "title": "which headers to capture"
+        },
+        "paramSampleConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ParamTraceConfig"
+          },
+          "title": "which parameters to capture"
+        },
+        "collectorUrlHttp": {
+          "type": "string",
+          "title": "url of OTEL collector - HTTP"
+        }
+      }
+    },
+    "v1TraceConfigOverride": {
+      "type": "object",
+      "properties": {
+        "sampleRate": {
+          "type": "number",
+          "format": "float"
+        },
+        "spanSelectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SpanSelector"
+          }
+        }
+      },
+      "description": "This configuration allows different sample rates to be applied to selected spans."
+    },
+    "v1ValidateTokenResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "title": "Unused, does not work in batch mode, will remove in V1 API"
+        },
+        "tokensValid": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TokenValid"
+          }
+        }
+      },
+      "description": "Specified whether tokens were valid."
+    }
+  }
+}

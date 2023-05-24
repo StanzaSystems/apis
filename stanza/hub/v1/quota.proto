@@ -1,0 +1,168 @@
+syntax = "proto3";
+package stanza.hub.v1;
+option go_package = "stanza/hub/v1;hubpb";
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "stanza/hub/v1/common.proto";
+
+// This protocol buffer definition is the source of truth for the Stanza Hub Quota API.
+// There is also an OpenAPI spec, generated via https://github.com/grpc-ecosystem/grpc-gateway.
+// Quota is a centralised ratelimiting service, used by the Stanza SDK and Browser to determine whether
+//   a given request should be permitted, or whether a Feature should be displayed.
+
+// The Quota service definition. This service is used by the Stanza SDK and Browser to determine whether
+// quota is available to use services which are subject to centralised ratelimiting.
+// "Keys" are not included in API and should be sent via a X-Stanza-Key header.
+// Customer IDs are determined based on the X-Stanza-Key header (each key is associated
+// with one and only one customer).
+// However, env must always be specified when requesting a token - stanza keys do not have to be
+// specific to an environment, so we cannot infer the env from the key.
+service QuotaService {
+  // Required for V0. Issue: https://github.com/StanzaSystems/stanza-hub/issues/25
+  rpc GetToken(GetTokenRequest) returns (GetTokenResponse) {
+    option (google.api.http) = {post: "/v1/quota/token"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get an access token"
+      description: "Get a token from Stanza Hub for access to given Decorator (optional Feature name for priority)."
+      responses: {
+        key: "429"
+        value: {description: "Unable to service request, try again after Retry-After."}
+      }
+    };
+  }
+  // All rpcs below this required for V1. Issue: https://github.com/StanzaSystems/stanza-hub/issues/120
+  rpc GetTokenLease(GetTokenLeaseRequest) returns (GetTokenLeaseResponse) {
+    option (google.api.http) = {post: "/v1/quota/lease"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get one or more access token leases"
+      description: "Get a set of token leases from Stanza Hub for access to given Decorator (optional Feature name for priority)."
+      responses: {
+        key: "429"
+        value: {description: "Unable to service request, try again after Retry-After."}
+      }
+    };
+  }
+  rpc SetTokenLeaseConsumed(SetTokenLeaseConsumedRequest) returns (SetTokenLeaseConsumedResponse) {
+    option (google.api.http) = {post: "/v1/quota/consumed"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Inform stanza that quota tokens were consumed"
+      description: "Inform stanza that one or more quota tokens were consumed."
+      responses: {
+        key: "429"
+        value: {description: "Unable to service request, try again after Retry-After."}
+      }
+    };
+  }
+  // Used by ingress decorators to validate Hub-generated tokens.
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/quota/validatetokens"
+      body: "tokens"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Validate one or more tokens"
+      description: "Validate one or more tokens."
+      responses: {
+        key: "429"
+        value: {description: "Unable to service request, try again after Retry-After."}
+      }
+    };
+  }
+}
+
+// Requests token for given decorator at priority of specified feature.
+message GetTokenRequest {
+  // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned
+  //   by the GetDecoratorConfig endpoint for this Decorator.
+  DecoratorFeatureSelector s = 1;
+  // Used for tracking per-client token usage, allowing automatic determination of efficient batch leases.
+  // ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or
+  //   a UUID.
+  optional string client_id = 4;
+  // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.
+  //  For instance, a customer may wish to boost the priority of paid user traffic over free tier.
+  //  Priority boosts may also be negative - for example, one might deprioritise bot traffic.
+  optional int32 priority_boost = 5;
+  // Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default
+  //   value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate
+  //   as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.
+  //   weight is optional; if not used then it is assumed that all requests have weight of 1.
+  optional float weight = 7;
+}
+
+// Specifies whether token granted.
+message GetTokenResponse {
+  bool granted = 1;
+  string token = 2;
+}
+
+// Requests token lease for given decorator at priority of specified feature.
+message GetTokenLeaseRequest {
+  // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned
+  //   by the GetDecoratorConfig endpoint for this Decorator.
+  // If tags are in use only one quota token will be issued at a time.
+  DecoratorFeatureSelector s = 1;
+  // Used for tracking per-client token usage, allowing automatic determination of efficient batch leases.
+  // ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or
+  //   a UUID.
+  optional string client_id = 4;
+  // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.
+  //  For instance, a customer may wish to boost the priority of paid user traffic over free tier.
+  //  Priority boosts may also be negative - for example, one might deprioritise bot traffic.
+  optional int32 priority_boost = 5;
+  // Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the
+  //   default request weight which should be assumed for leases. If not specified, then the median weight is
+  //   used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.
+  //   default_weight is optional; if not used then it is assumed that all requests have weight of 1.
+  optional float default_weight = 7;
+}
+
+// Specifies tokens granted and their duration (may be empty if none granted)
+message GetTokenLeaseResponse {
+  repeated TokenLease leases = 1;
+}
+
+message TokenLease {
+  int32 duration_msec = 1;
+  string token = 2;
+  string feature = 3;
+  int32 priority_boost = 4;
+  float weight = 5;
+}
+
+// Notifies Hub that one or more token leases has been used, i.e. decorator has been exercised.
+message SetTokenLeaseConsumedRequest {
+  repeated string tokens = 1 [(google.api.field_behavior) = REQUIRED];
+  // Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not
+  //   known before request execution, then a default or estimated weight may be used, followed by a corrected
+  //   value here. The value sent here should be the actual request weight.
+  //   This field is optional.
+  optional float weight_correction = 2;
+}
+
+// No message contents yet
+message SetTokenLeaseConsumedResponse {}
+
+// Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Decorator).
+// Used from Ingress decorators. Ensures callers have acquired quota prior to expending resources.
+message ValidateTokenRequest {
+  repeated TokenInfo tokens = 1;
+}
+
+message TokenInfo {
+  string token = 1 [(google.api.field_behavior) = REQUIRED];
+  DecoratorSelector decorator = 2;
+}
+
+// Specified whether tokens were valid.
+message ValidateTokenResponse {
+  bool valid = 1; // Unused, does not work in batch mode, will remove in V1 API
+  repeated TokenValid tokens_valid = 2;
+}
+
+message TokenValid {
+  string token = 1;
+  bool valid = 2;
+}
