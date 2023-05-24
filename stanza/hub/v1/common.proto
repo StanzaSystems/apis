@@ -1,10 +1,10 @@
 syntax = "proto3";
 package stanza.hub.v1;
-option go_package = "stanza/hub/v1;hubpb";
 
 import "google/api/field_behavior.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
+option go_package = "stanza/hub/v1;hubpb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Stanza Hub API",
