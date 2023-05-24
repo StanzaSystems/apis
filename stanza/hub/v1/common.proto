@@ -13,7 +13,33 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   schemes: HTTPS;
   consumes: "application/json";
   produces: "application/json";
+  security_definitions: {
+    security: {
+      key: "ApiKeyAuth";
+      value: {
+        type: TYPE_API_KEY;
+        in: IN_HEADER;
+        name: "X-Stanza-Key";
+      }
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "ApiKeyAuth";
+      value: {};
+    }
+  }
+  responses: {
+    key: "429"
+    value: {description: "Unable to service request, try again after Retry-After."}
+  }
 };
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Type Selectors
+//
+///////////////////////////////////////////////////////////////////////////////
 
 message DecoratorSelector {
   string environment = 1 [(google.api.field_behavior) = REQUIRED];

@@ -23,31 +23,29 @@ service HealthService {
       summary: "Get decorator health information."
       description: "Used by SDK to allow developers to make decisions about graceful degradation of backend services."
       responses: {
-        key: "429"
-        value: {description: "Unable to service request, try again after Retry-After."}
+        key: "200"
+        value: {
+          description: "OK",
+          schema: {
+            json_schema: {ref: ".stanza.hub.v1.QueryDecoratorHealthResponse"}
+          }
+        }
       }
     };
   }
 }
 
-// Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level.
-// Used so that customer code can make good decisions about fail-fast or graceful degradation as high
-// up the stack as possible.
-// SDK may cache the result for up to 10 seconds.
+// Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
 message QueryDecoratorHealthRequest {
-  // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned
-  //   by the GetDecoratorConfig endpoint for this Decorator.
+  // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator.
   // Health of the decorator with respect to the specified tags will be returned.
   // If tags are omitted, health of decorator only with respect to the specified feature priority and boost will be returned.
   DecoratorFeatureSelector s = 1; // Required: decoratorName, featureName, environment
 
-  // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority.
-  //  For instance, a customer may wish to boost the priority of paid user traffic over free tier.
-  //  Priority boosts may also be negative - for example, one might deprioritise bot traffic.
+  // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
   int32 priority_boost = 4;
 }
 
-// HEALTH_UNSPECIFIED = 0; HEALTH_OK = 1; HEALTH_OVERLOAD = 2; HEALTH_DOWN = 3;
 message QueryDecoratorHealthResponse {
   Health health = 1;
 }
