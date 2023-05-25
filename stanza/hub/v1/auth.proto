@@ -1,0 +1,37 @@
+syntax = "proto3";
+package stanza.hub.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "stanza/hub/v1/common.proto";
+
+option go_package = "stanza/hub/v1;hubpb";
+
+// This protocol buffer definition is the source of truth for the Stanza Hub API.
+// There is also an OpenAPI spec, generated via https://github.com/grpc-ecosystem/grpc-gateway.
+//
+// This module supports authentication and authorization via Bearer Tokens.
+
+service AuthService {
+  rpc GetBearerToken(GetBearerTokenRequest) returns (GetBearerTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/token"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Consume an API key and return a Bearer Token."
+      description: "Takes an API key as and argument and returns a Bearer Token if valid."
+    };
+  }
+}
+
+// Bearer Token Authentication Validation
+message GetBearerTokenRequest {
+  string api_key = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetBearerTokenResponse {
+  string bearer_token = 1;
+  string error_message = 2;
+}
