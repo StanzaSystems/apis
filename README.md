@@ -1,7 +1,7 @@
 # Stanza Public APIs
 
 This repository contains the Stanza API as Language Independent Interface Types (.proto files) as well as our corresponding REST API (.json files). It is recommended to generate
-and use language specific gRPC clients whenever possible.
+and use language specific [Buf Connect](https://buf.build/blog/connect-a-better-grpc) or gRPC clients whenever possible.
 
 ## Generate gRPC Client Libraries
 
