@@ -1,6 +1,6 @@
 # Stanza Public APIs
 
-This repository contains the Stanza protocol specification and the corresponding Language Independent Interface Types (.proto files) as well as our REST APIs (*.json files). It is recommended to generate
+This repository contains the Stanza API as Language Independent Interface Types (.proto files) as well as our corresponding REST API (.json files). It is recommended to generate
 and use language specific gRPC clients whenever possible.
 
 ## Generate gRPC Client Libraries
@@ -19,17 +19,17 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: gen
+    default: gen/go
     except:
       - buf.build/googleapis/googleapis
       - buf.build/grpc-ecosystem/grpc-gateway
 plugins:
   - plugin: buf.build/protocolbuffers/go
-    out: gen
+    out: gen/go
     opt: paths=source_relative
-  - plugin: buf.build/grpc/go
-    out: gen
-    opt: paths=source_relative,require_unimplemented_servers=false
+  - plugin: buf.build/bufbuild/connect-go
+    out: gen/go
+    opt: paths=source_relative
 ```
 
 Please see [Generating Code with Buf](https://buf.build/docs/generate/overview/) documentation for more on `buf.gen.yaml`.
