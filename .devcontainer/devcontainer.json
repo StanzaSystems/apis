@@ -18,10 +18,11 @@
 				]
 			},
 			"extensions": [
-					"bufbuild.vscode-buf",
-					"peterj.proto",
-					"streetsidesoftware.code-spell-checker",
-					"GitHub.vscode-pull-request-github"
+				"bufbuild.vscode-buf",
+				"peterj.proto",
+				"streetsidesoftware.code-spell-checker",
+				"GitHub.vscode-pull-request-github",
+				"github.vscode-github-actions"
 			]
 		}
 	},
