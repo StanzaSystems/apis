@@ -3,6 +3,14 @@
 This repository contains the Stanza API as Language Independent Interface Types (.proto files) as well as our corresponding REST API (.json files). It is recommended to generate
 and use language specific [Buf Connect](https://buf.build/blog/connect-a-better-grpc) or gRPC clients whenever possible.
 
+## Generating Swagger files
+
+```
+buf generate --template stanza/hub/v1/buf.gen.yaml --path stanza/hub/v1
+```
+
+This will eventually be automated away.
+
 ## Generate gRPC Client Libraries
 
 Create a _local_ `buf.gen.yaml` file in the target repository and generate appropriate language

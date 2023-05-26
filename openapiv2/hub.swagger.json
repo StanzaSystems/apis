@@ -822,6 +822,9 @@
         },
         "token": {
           "type": "string"
+        },
+        "reason": {
+          "$ref": "#/definitions/v1Reason"
         }
       },
       "description": "Specifies whether token granted."
@@ -907,6 +910,16 @@
           "$ref": "#/definitions/v1Health"
         }
       }
+    },
+    "v1Reason": {
+      "type": "string",
+      "enum": [
+        "REASON_SUFFICIENT_QUOTA",
+        "REASON_INSUFFICIENT_QUOTA",
+        "REASON_INSUFFICIENT_QUOTA_PARENT",
+        "REASON_BURST",
+        "REASON_BEST_EFFORT"
+      ]
     },
     "v1SentinelConfig": {
       "type": "object",
@@ -1017,6 +1030,9 @@
         "weight": {
           "type": "number",
           "format": "float"
+        },
+        "reason": {
+          "$ref": "#/definitions/v1Reason"
         }
       }
     },
