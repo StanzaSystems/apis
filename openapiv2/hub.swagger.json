@@ -6,6 +6,9 @@
   },
   "tags": [
     {
+      "name": "AuthService"
+    },
+    {
       "name": "ConfigService"
     },
     {
@@ -25,6 +28,44 @@
     "application/json"
   ],
   "paths": {
+    "/v1/auth/token": {
+      "post": {
+        "summary": "Consume an API key and return a Bearer Token.",
+        "description": "Takes an API key as and argument and returns a Bearer Token if valid.",
+        "operationId": "AuthService_GetBearerToken",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/v1GetBearerTokenResponse"
+            }
+          },
+          "429": {
+            "description": "Unable to service request, try again after Retry-After.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetBearerTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
     "/v1/config/decorator": {
       "get": {
         "summary": "Get decorator config",
@@ -696,6 +737,26 @@
       "required": [
         "environment"
       ]
+    },
+    "v1GetBearerTokenRequest": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
+        }
+      },
+      "title": "Bearer Token Authentication Validation",
+      "required": [
+        "apiKey"
+      ]
+    },
+    "v1GetBearerTokenResponse": {
+      "type": "object",
+      "properties": {
+        "bearerToken": {
+          "type": "string"
+        }
+      }
     },
     "v1GetBrowserContextResponse": {
       "type": "object",

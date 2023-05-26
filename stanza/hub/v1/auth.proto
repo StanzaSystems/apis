@@ -21,6 +21,15 @@ service AuthService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Consume an API key and return a Bearer Token."
       description: "Takes an API key as and argument and returns a Bearer Token if valid."
+      responses: {
+        key: "200"
+        value: {
+          description: "OK",
+          schema: {
+            json_schema: {ref: ".stanza.hub.v1.GetBearerTokenResponse"}
+          }
+        }
+      }
     };
   }
 }
@@ -32,5 +41,4 @@ message GetBearerTokenRequest {
 
 message GetBearerTokenResponse {
   string bearer_token = 1;
-  string error_message = 2;
 }
