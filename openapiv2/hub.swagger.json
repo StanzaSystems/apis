@@ -41,8 +41,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -79,8 +87,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -140,8 +156,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -211,8 +235,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -257,8 +289,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -313,8 +353,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -361,8 +409,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -432,8 +488,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -503,8 +567,16 @@
             }
           },
           "429": {
-            "description": "Unable to service request, try again after Retry-After.",
-            "schema": {}
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
           },
           "default": {
             "description": "An unexpected error response.",
@@ -1134,10 +1206,5 @@
       "name": "X-Stanza-Key",
       "in": "header"
     }
-  },
-  "security": [
-    {
-      "ApiKeyAuth": []
-    }
-  ]
+  }
 }
