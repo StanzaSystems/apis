@@ -9,6 +9,15 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Stanza Hub API",
     version: "1.0"
+    contact: {
+      name: "Stanza",
+      url: "https://stanza.systems",
+      email: "support@stanza.systems"
+    }
+  };
+  external_docs: {
+    url: "https://stanza.stoplight.io/docs/apis/291a2cff9d156-stanza-hub-api";
+    description: "Stanza Hub API";
   };
   schemes: HTTPS;
   consumes: "application/json";
@@ -22,7 +31,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         name: "X-Stanza-Key";
       }
     }
-  }
+  };
   responses: {
     key: "429"
     value: {

@@ -2,7 +2,12 @@
   "swagger": "2.0",
   "info": {
     "title": "Stanza Hub API",
-    "version": "1.0"
+    "version": "1.0",
+    "contact": {
+      "name": "Stanza",
+      "url": "https://stanza.systems",
+      "email": "support@stanza.systems"
+    }
   },
   "tags": [
     {
@@ -1206,5 +1211,9 @@
       "name": "X-Stanza-Key",
       "in": "header"
     }
+  },
+  "externalDocs": {
+    "description": "Stanza Hub API",
+    "url": "https://stanza.stoplight.io/docs/apis/291a2cff9d156-stanza-hub-api"
   }
 }
