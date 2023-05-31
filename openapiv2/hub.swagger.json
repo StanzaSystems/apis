@@ -51,6 +51,12 @@
               "$ref": "#/definitions/rpcStatus"
             }
           },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
           "503": {
             "description": "Service Unavailable, try again after Retry-After.",
             "schema": {
@@ -93,6 +99,12 @@
           },
           "429": {
             "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
             "schema": {
               "$ref": "#/definitions/rpcStatus"
             }
@@ -140,6 +152,12 @@
           },
           "429": {
             "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
             "schema": {
               "$ref": "#/definitions/rpcStatus"
             }
@@ -207,6 +225,12 @@
               "$ref": "#/definitions/rpcStatus"
             }
           },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
           "503": {
             "description": "Service Unavailable, try again after Retry-After.",
             "schema": {
@@ -250,6 +274,12 @@
           },
           "429": {
             "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
             "schema": {
               "$ref": "#/definitions/rpcStatus"
             }
@@ -301,6 +331,12 @@
               "$ref": "#/definitions/rpcStatus"
             }
           },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
           "503": {
             "description": "Service Unavailable, try again after Retry-After.",
             "schema": {
@@ -344,6 +380,12 @@
           },
           "429": {
             "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
             "schema": {
               "$ref": "#/definitions/rpcStatus"
             }
@@ -395,6 +437,12 @@
               "$ref": "#/definitions/rpcStatus"
             }
           },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
           "503": {
             "description": "Service Unavailable, try again after Retry-After.",
             "schema": {
@@ -438,6 +486,12 @@
           },
           "429": {
             "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
             "schema": {
               "$ref": "#/definitions/rpcStatus"
             }
