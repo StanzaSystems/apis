@@ -36,7 +36,7 @@
     "/v1/auth/token": {
       "get": {
         "summary": "Get Bearer Token",
-        "description": "Inspects the X-Stanza-Key auth header and returns a new Bearer Token if valid.",
+        "description": "Inspects the X-Stanza-Key auth header and returns a new Bearer Token if API key is valid.",
         "operationId": "AuthService_GetBearerToken",
         "responses": {
           "200": {
@@ -78,7 +78,7 @@
     "/v1/config/decorator": {
       "post": {
         "summary": "Get decorator config",
-        "description": "Get decorator config from Stanza Hub.",
+        "description": "Used by SDK to get decorator config from Stanza Hub.",
         "operationId": "ConfigService_GetDecoratorConfig",
         "responses": {
           "200": {
@@ -131,7 +131,7 @@
     "/v1/config/service": {
       "post": {
         "summary": "Get service config",
-        "description": "Get service config from Stanza Hub.",
+        "description": "Used by SDK to get service config from Stanza Hub.",
         "operationId": "ConfigService_GetServiceConfig",
         "responses": {
           "200": {
@@ -184,7 +184,7 @@
     "/v1/context/browser": {
       "post": {
         "summary": "Get browser context",
-        "description": "Get browser context from Stanza Hub.",
+        "description": "Used by SDK to get browser context from Stanza Hub.",
         "operationId": "ConfigService_GetBrowserContext",
         "responses": {
           "200": {

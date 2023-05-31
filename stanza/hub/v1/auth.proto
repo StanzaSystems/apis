@@ -16,7 +16,7 @@ service AuthService {
     option (google.api.http) = {get: "/v1/auth/token"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get Bearer Token"
-      description: "Inspects the X-Stanza-Key auth header and returns a new Bearer Token if valid."
+      description: "Inspects the X-Stanza-Key auth header and returns a new Bearer Token if API key is valid."
       responses: {
         key: "200"
         value: {
