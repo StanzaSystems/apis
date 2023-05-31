@@ -34,9 +34,9 @@
   ],
   "paths": {
     "/v1/auth/token": {
-      "post": {
-        "summary": "Consume an API key and return a Bearer Token.",
-        "description": "Takes an API key as and argument and returns a Bearer Token if valid.",
+      "get": {
+        "summary": "Returns a Bearer Token if your API key is valid.",
+        "description": "Inspects the X-Stanza-Key auth header and returns a new Bearer Token if valid.",
         "operationId": "AuthService_GetBearerToken",
         "responses": {
           "200": {
@@ -70,16 +70,6 @@
             }
           }
         },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetBearerTokenRequest"
-            }
-          }
-        ],
         "tags": [
           "AuthService"
         ]
@@ -731,25 +721,14 @@
         "environment"
       ]
     },
-    "v1GetBearerTokenRequest": {
-      "type": "object",
-      "properties": {
-        "apiKey": {
-          "type": "string"
-        }
-      },
-      "title": "Bearer Token Authentication Validation",
-      "required": [
-        "apiKey"
-      ]
-    },
     "v1GetBearerTokenResponse": {
       "type": "object",
       "properties": {
         "bearerToken": {
           "type": "string"
         }
-      }
+      },
+      "description": "GetBearerTokenResponse is a new Bearer Token."
     },
     "v1GetBrowserContextRequest": {
       "type": "object",
