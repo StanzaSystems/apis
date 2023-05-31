@@ -25,7 +25,7 @@ service ConfigService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get decorator config"
+      summary: "Get Decorator Config"
       description: "Used by SDK to get decorator config from Stanza Hub."
       responses: {
         key: "200"
@@ -44,7 +44,7 @@ service ConfigService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get browser context"
+      summary: "Get Browser Context"
       description: "Used by SDK to get browser context from Stanza Hub."
       responses: {
         key: "200"
@@ -83,7 +83,7 @@ service ConfigService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get service config"
+      summary: "Get Service Config"
       description: "Used by SDK to get service config from Stanza Hub."
       responses: {
         key: "200"

@@ -23,7 +23,7 @@ service QuotaService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get access token"
+      summary: "Get Access Token"
       description: "Get a single token from Stanza Hub for access to given Decorator (optional Feature name for priority)."
       responses: {
         key: "200"
@@ -42,7 +42,7 @@ service QuotaService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get access token leases"
+      summary: "Get Access Token Leases"
       description: "Get a set of token leases from Stanza Hub for access to given Decorator (optional Feature name for priority)."
       responses: {
         key: "200"
@@ -61,7 +61,7 @@ service QuotaService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Consume access tokens"
+      summary: "Consume Access Tokens"
       description: "Inform Stanza Hub that quota access tokens were consumed."
       responses: {
         key: "200"
@@ -81,7 +81,7 @@ service QuotaService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Validate access tokens"
+      summary: "Validate Access Tokens"
       description: "Validate quota access tokens with Stanza Hub."
       responses: {
         key: "200"
