@@ -814,7 +814,7 @@
     "v1GetTokenLeaseRequest": {
       "type": "object",
       "properties": {
-        "s": {
+        "selector": {
           "$ref": "#/definitions/v1DecoratorFeatureSelector",
           "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time."
         },
