@@ -80,7 +80,7 @@
       }
     },
     "/v1/config/decorator": {
-      "get": {
+      "post": {
         "summary": "Get decorator config",
         "description": "Get decorator config from Stanza Hub.",
         "operationId": "ConfigService_GetDecoratorConfig",
@@ -112,35 +112,13 @@
         },
         "parameters": [
           {
-            "name": "versionSeen",
-            "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "s.environment",
-            "in": "query",
+            "name": "body",
+            "description": "GetDecoratorConfigRequest is the request from Backend SDKs to Hub for an decorator's config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen/. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between envs. Decorator configurations are SHARED between Services, but may be overridden for specific Services.\n\nRequired Header: X-Stanza-Key",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.decoratorName",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.serviceName",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.serviceRelease",
-            "in": "query",
-            "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/v1GetDecoratorConfigRequest"
+            }
           }
         ],
         "tags": [
@@ -149,7 +127,7 @@
       }
     },
     "/v1/config/service": {
-      "get": {
+      "post": {
         "summary": "Get service config",
         "description": "Get service config from Stanza Hub.",
         "operationId": "ConfigService_GetServiceConfig",
@@ -181,29 +159,13 @@
         },
         "parameters": [
           {
-            "name": "versionSeen",
-            "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "service.environment",
-            "in": "query",
+            "name": "body",
+            "description": "GetServiceConfigRequest is the request from Backend SDKs to Hub for a service config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.\n\nRequired Header: X-Stanza-Key",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "service.name",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "service.release",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/v1GetServiceConfigRequest"
+            }
           }
         ],
         "tags": [
@@ -212,7 +174,7 @@
       }
     },
     "/v1/context/browser": {
-      "get": {
+      "post": {
         "summary": "Get browser context",
         "description": "Get browser context from Stanza Hub.",
         "operationId": "ConfigService_GetBrowserContext",
@@ -260,20 +222,13 @@
         },
         "parameters": [
           {
-            "name": "feature.environment",
-            "in": "query",
+            "name": "body",
+            "description": "GetBrowserContextRequest is the request from Browser SDKs to Hub for a browser config.\nSDKs are expected to periodically poll, giving the version of the most recent configuration seen.\nConfigurations may be large; we will not re-send them unless they have changed.\nIf no feature_names are specified, all Features belonging to the organisation will be returned.\n\nRequired Header: X-Stanza-Key\nOptional Header: etag",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "feature.names",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "schema": {
+              "$ref": "#/definitions/v1GetBrowserContextRequest"
+            }
           }
         ],
         "tags": [
@@ -282,7 +237,7 @@
       }
     },
     "/v1/health/decorator": {
-      "get": {
+      "post": {
         "summary": "Get decorator health information.",
         "description": "Used by SDK to allow developers to make decisions about graceful degradation of backend services.",
         "operationId": "HealthService_QueryDecoratorHealth",
@@ -314,30 +269,13 @@
         },
         "parameters": [
           {
-            "name": "s.environment",
-            "in": "query",
+            "name": "body",
+            "description": "Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.decoratorName",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.featureName",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "priorityBoost",
-            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
+            "schema": {
+              "$ref": "#/definitions/v1QueryDecoratorHealthRequest"
+            }
           }
         ],
         "tags": [
@@ -378,22 +316,13 @@
         },
         "parameters": [
           {
-            "name": "tokens",
-            "in": "query",
+            "name": "body",
+            "description": "Notifies Hub that one or more token leases has been used, i.e. decorator has been exercised.",
+            "in": "body",
             "required": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
-          },
-          {
-            "name": "weightCorrection",
-            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not known before request execution, then a default or estimated weight may be used, followed by a corrected value here. If a value is sent here, it should be the actual request weight.",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "format": "float"
+            "schema": {
+              "$ref": "#/definitions/v1SetTokenLeaseConsumedRequest"
+            }
           }
         ],
         "tags": [
@@ -434,45 +363,13 @@
         },
         "parameters": [
           {
-            "name": "s.environment",
-            "in": "query",
+            "name": "body",
+            "description": "Requests token lease for given decorator at priority of specified feature.",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.decoratorName",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.featureName",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "clientId",
-            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "priorityBoost",
-            "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "defaultWeight",
-            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the default request weight which should be assumed for leases. If not specified, then the median weight is used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.\n\ndefault_weight is optional; if not used then it is assumed that all requests have weight of 1.",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "format": "float"
+            "schema": {
+              "$ref": "#/definitions/v1GetTokenLeaseRequest"
+            }
           }
         ],
         "tags": [
@@ -513,45 +410,13 @@
         },
         "parameters": [
           {
-            "name": "s.environment",
-            "in": "query",
+            "name": "body",
+            "description": "Requests token for given decorator at priority of specified feature.",
+            "in": "body",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.decoratorName",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "s.featureName",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "clientId",
-            "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "priorityBoost",
-            "description": "Used to increase or decrease priority of request, relative to normal feature priority.",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "weight",
-            "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.\n\nweight is optional; if not used then it is assumed that all requests have weight of 1.",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "format": "float"
+            "schema": {
+              "$ref": "#/definitions/v1GetTokenRequest"
+            }
           }
         ],
         "tags": [
@@ -592,15 +457,12 @@
         },
         "parameters": [
           {
-            "name": "tokens",
+            "name": "body",
+            "description": "Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Decorator). Used from Ingress decorators. Ensures callers have acquired quota prior to expending resources.",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "$ref": "#/definitions/v1TokenInfo"
-              }
+              "$ref": "#/definitions/v1ValidateTokenRequest"
             }
           }
         ],
@@ -835,6 +697,16 @@
         }
       }
     },
+    "v1GetBrowserContextRequest": {
+      "type": "object",
+      "properties": {
+        "feature": {
+          "$ref": "#/definitions/v1FeatureSelector",
+          "description": "Information required to select and return the most recent BrowserContext version. If Feature names is nil, will return all Features in the organisation associated with the bearer token/API key, otherwise only information related to the named Features will be returned."
+        }
+      },
+      "description": "GetBrowserContextRequest is the request from Browser SDKs to Hub for a browser config.\nSDKs are expected to periodically poll, giving the version of the most recent configuration seen.\nConfigurations may be large; we will not re-send them unless they have changed.\nIf no feature_names are specified, all Features belonging to the organisation will be returned.\n\nRequired Header: X-Stanza-Key\nOptional Header: etag"
+    },
     "v1GetBrowserContextResponse": {
       "type": "object",
       "properties": {
@@ -847,6 +719,20 @@
         }
       },
       "description": "GetBrowserConfigResponse is the response from Hub to Browser SDKs. It is designed to be cacheable for short periods. It is also designed to be shareable between multiple clients (e.g. in case of SSR or use of CDN etc).\n\nReturns etag header.\n\nMay return 304 Not Modified with etag header and empty payload."
+    },
+    "v1GetDecoratorConfigRequest": {
+      "type": "object",
+      "properties": {
+        "versionSeen": {
+          "type": "string",
+          "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available."
+        },
+        "s": {
+          "$ref": "#/definitions/v1DecoratorServiceSelector",
+          "description": "Information required to select and return the correct DecoratorConfig version."
+        }
+      },
+      "description": "GetDecoratorConfigRequest is the request from Backend SDKs to Hub for an decorator's config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen/. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between envs. Decorator configurations are SHARED between Services, but may be overridden for specific Services.\n\nRequired Header: X-Stanza-Key"
     },
     "v1GetDecoratorConfigResponse": {
       "type": "object",
@@ -863,6 +749,20 @@
       },
       "description": "GetDecoratorConfigResponse is the response from Hub to Backend SDKs.\nNote that `config_data_sent` will be false and `config` will be empty if we did not have a newer config\nversion than `version_seen`."
     },
+    "v1GetServiceConfigRequest": {
+      "type": "object",
+      "properties": {
+        "versionSeen": {
+          "type": "string",
+          "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available."
+        },
+        "service": {
+          "$ref": "#/definitions/v1ServiceSelector",
+          "title": "Information required to select and return the most recent ServiceConfig version"
+        }
+      },
+      "description": "GetServiceConfigRequest is the request from Backend SDKs to Hub for a service config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.\n\nRequired Header: X-Stanza-Key"
+    },
     "v1GetServiceConfigResponse": {
       "type": "object",
       "properties": {
@@ -878,6 +778,30 @@
       },
       "description": "GetServiceConfigResponse is the response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`."
     },
+    "v1GetTokenLeaseRequest": {
+      "type": "object",
+      "properties": {
+        "s": {
+          "$ref": "#/definitions/v1DecoratorFeatureSelector",
+          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time."
+        },
+        "clientId": {
+          "type": "string",
+          "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID."
+        },
+        "priorityBoost": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic."
+        },
+        "defaultWeight": {
+          "type": "number",
+          "format": "float",
+          "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the default request weight which should be assumed for leases. If not specified, then the median weight is used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.\n\ndefault_weight is optional; if not used then it is assumed that all requests have weight of 1."
+        }
+      },
+      "description": "Requests token lease for given decorator at priority of specified feature."
+    },
     "v1GetTokenLeaseResponse": {
       "type": "object",
       "properties": {
@@ -890,6 +814,30 @@
         }
       },
       "title": "Specifies tokens granted and their duration (may be empty if none granted)"
+    },
+    "v1GetTokenRequest": {
+      "type": "object",
+      "properties": {
+        "s": {
+          "$ref": "#/definitions/v1DecoratorFeatureSelector",
+          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time."
+        },
+        "clientId": {
+          "type": "string",
+          "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID."
+        },
+        "priorityBoost": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Used to increase or decrease priority of request, relative to normal feature priority."
+        },
+        "weight": {
+          "type": "number",
+          "format": "float",
+          "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.\n\nweight is optional; if not used then it is assumed that all requests have weight of 1."
+        }
+      },
+      "description": "Requests token for given decorator at priority of specified feature."
     },
     "v1GetTokenResponse": {
       "type": "object",
@@ -980,6 +928,21 @@
       },
       "description": "Specifies which request parameters should be sampled."
     },
+    "v1QueryDecoratorHealthRequest": {
+      "type": "object",
+      "properties": {
+        "s": {
+          "$ref": "#/definitions/v1DecoratorFeatureSelector",
+          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.\n\nRequired: decoratorName, featureName, environment"
+        },
+        "priorityBoost": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic."
+        }
+      },
+      "description": "Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds."
+    },
     "v1QueryDecoratorHealthResponse": {
       "type": "object",
       "properties": {
@@ -1054,6 +1017,26 @@
       "required": [
         "environment",
         "name"
+      ]
+    },
+    "v1SetTokenLeaseConsumedRequest": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "weightCorrection": {
+          "type": "number",
+          "format": "float",
+          "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not known before request execution, then a default or estimated weight may be used, followed by a corrected value here. If a value is sent here, it should be the actual request weight."
+        }
+      },
+      "description": "Notifies Hub that one or more token leases has been used, i.e. decorator has been exercised.",
+      "required": [
+        "tokens"
       ]
     },
     "v1SetTokenLeaseConsumedResponse": {
@@ -1186,6 +1169,19 @@
         }
       },
       "description": "This configuration allows different sample rates to be applied to selected spans."
+    },
+    "v1ValidateTokenRequest": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TokenInfo"
+          }
+        }
+      },
+      "description": "Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Decorator). Used from Ingress decorators. Ensures callers have acquired quota prior to expending resources."
     },
     "v1ValidateTokenResponse": {
       "type": "object",

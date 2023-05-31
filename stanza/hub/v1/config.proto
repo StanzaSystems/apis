@@ -20,7 +20,10 @@ option go_package = "stanza/hub/v1;hubpb";
 // This service is used by the Browser SDK to get Browser Contexts.
 service ConfigService {
   rpc GetDecoratorConfig(GetDecoratorConfigRequest) returns (GetDecoratorConfigResponse) {
-    option (google.api.http) = {get: "/v1/config/decorator"};
+    option (google.api.http) = {
+      post: "/v1/config/decorator"
+      body: "*"
+    };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get decorator config"
       description: "Get decorator config from Stanza Hub."
@@ -36,7 +39,10 @@ service ConfigService {
     };
   }
   rpc GetBrowserContext(GetBrowserContextRequest) returns (GetBrowserContextResponse) {
-    option (google.api.http) = {get: "/v1/context/browser"};
+    option (google.api.http) = {
+      post: "/v1/context/browser"
+      body: "*"
+    };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get browser context"
       description: "Get browser context from Stanza Hub."
@@ -72,7 +78,10 @@ service ConfigService {
     };
   }
   rpc GetServiceConfig(GetServiceConfigRequest) returns (GetServiceConfigResponse) {
-    option (google.api.http) = {get: "/v1/config/service"};
+    option (google.api.http) = {
+      post: "/v1/config/service"
+      body: "*"
+    };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get service config"
       description: "Get service config from Stanza Hub."
