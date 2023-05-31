@@ -41,7 +41,7 @@ service HealthService {
 // Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
 message QueryDecoratorHealthRequest {
   // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.
-  DecoratorFeatureSelector s = 1; // Required: decoratorName, featureName, environment
+  DecoratorFeatureSelector selector = 1; // Required: decoratorName, featureName, environment
 
   // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
   optional int32 priority_boost = 4;

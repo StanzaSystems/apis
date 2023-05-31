@@ -112,7 +112,7 @@ message GetDecoratorConfigRequest {
   optional string version_seen = 1;
 
   // Information required to select and return the correct DecoratorConfig version.
-  DecoratorServiceSelector s = 2;
+  DecoratorServiceSelector selector = 2;
 }
 
 // GetDecoratorConfigResponse is the response from Hub to Backend SDKs.

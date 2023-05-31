@@ -760,7 +760,7 @@
           "type": "string",
           "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available."
         },
-        "s": {
+        "selector": {
           "$ref": "#/definitions/v1DecoratorServiceSelector",
           "description": "Information required to select and return the correct DecoratorConfig version."
         }
@@ -851,7 +851,7 @@
     "v1GetTokenRequest": {
       "type": "object",
       "properties": {
-        "s": {
+        "selector": {
           "$ref": "#/definitions/v1DecoratorFeatureSelector",
           "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time."
         },
@@ -964,7 +964,7 @@
     "v1QueryDecoratorHealthRequest": {
       "type": "object",
       "properties": {
-        "s": {
+        "selector": {
           "$ref": "#/definitions/v1DecoratorFeatureSelector",
           "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.\n\nRequired: decoratorName, featureName, environment"
         },
