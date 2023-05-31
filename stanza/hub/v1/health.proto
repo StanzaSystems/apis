@@ -23,7 +23,7 @@ service HealthService {
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get decorator health information."
+      summary: "Get decorator health"
       description: "Used by SDK to allow developers to make decisions about graceful degradation of backend services."
       responses: {
         key: "200"

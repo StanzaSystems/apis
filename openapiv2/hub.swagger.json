@@ -35,7 +35,7 @@
   "paths": {
     "/v1/auth/token": {
       "get": {
-        "summary": "Returns a Bearer Token if your API key is valid.",
+        "summary": "Get Bearer Token",
         "description": "Inspects the X-Stanza-Key auth header and returns a new Bearer Token if valid.",
         "operationId": "AuthService_GetBearerToken",
         "responses": {
@@ -252,7 +252,7 @@
     },
     "/v1/health/decorator": {
       "post": {
-        "summary": "Get decorator health information.",
+        "summary": "Get decorator health",
         "description": "Used by SDK to allow developers to make decisions about graceful degradation of backend services.",
         "operationId": "HealthService_QueryDecoratorHealth",
         "responses": {
@@ -305,7 +305,7 @@
     },
     "/v1/quota/consumed": {
       "post": {
-        "summary": "Inform stanza that quota tokens were consumed",
+        "summary": "Consume access tokens",
         "description": "Inform stanza that one or more quota tokens were consumed.",
         "operationId": "QuotaService_SetTokenLeaseConsumed",
         "responses": {
@@ -358,7 +358,7 @@
     },
     "/v1/quota/lease": {
       "post": {
-        "summary": "Get one or more access token leases",
+        "summary": "Get access token leases",
         "description": "Get a set of token leases from Stanza Hub for access to given Decorator (optional Feature name for priority).",
         "operationId": "QuotaService_GetTokenLease",
         "responses": {
@@ -411,7 +411,7 @@
     },
     "/v1/quota/token": {
       "post": {
-        "summary": "Get an access token",
+        "summary": "Get access token",
         "description": "Get a token from Stanza Hub for access to given Decorator (optional Feature name for priority).",
         "operationId": "QuotaService_GetToken",
         "responses": {
@@ -464,7 +464,7 @@
     },
     "/v1/quota/validatetokens": {
       "post": {
-        "summary": "Validate one or more tokens",
+        "summary": "Validate access tokens",
         "description": "Validate one or more tokens.",
         "operationId": "QuotaService_ValidateToken",
         "responses": {
