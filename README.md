@@ -41,4 +41,3 @@ plugins:
 ```
 
 Please see [Generating Code with Buf](https://buf.build/docs/generate/overview/) documentation for more on `buf.gen.yaml`.
-
