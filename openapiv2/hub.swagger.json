@@ -1241,6 +1241,11 @@
       "in": "header"
     }
   },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
   "externalDocs": {
     "description": "Stanza Hub API",
     "url": "https://stanza.stoplight.io/docs/apis/291a2cff9d156-stanza-hub-api"
