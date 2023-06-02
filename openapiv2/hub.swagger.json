@@ -78,7 +78,7 @@
     "/v1/config/decorator": {
       "post": {
         "summary": "Get Decorator Config",
-        "description": "Used by SDK to get decorator config from Stanza Hub.",
+        "description": "Used by SDK to get a Decorator Config from Stanza Hub.",
         "operationId": "ConfigService_GetDecoratorConfig",
         "responses": {
           "200": {
@@ -115,7 +115,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "GetDecoratorConfigRequest is the request from Backend SDKs to Hub for an decorator's config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen/. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between envs. Decorator configurations are SHARED between Services, but may be overridden for specific Services.\n\nRequired Header: X-Stanza-Key",
+            "description": "Request from Backend SDKs for a Decorator Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between environments but are SHARED between Services.",
             "in": "body",
             "required": true,
             "schema": {
@@ -131,7 +131,7 @@
     "/v1/config/service": {
       "post": {
         "summary": "Get Service Config",
-        "description": "Used by SDK to get service config from Stanza Hub.",
+        "description": "Used by SDK to get a Service Config from Stanza Hub.",
         "operationId": "ConfigService_GetServiceConfig",
         "responses": {
           "200": {
@@ -168,7 +168,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "GetServiceConfigRequest is the request from Backend SDKs to Hub for a service config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.\n\nRequired Header: X-Stanza-Key",
+            "description": "The request from Backend SDKs for a Service Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.",
             "in": "body",
             "required": true,
             "schema": {
@@ -184,7 +184,7 @@
     "/v1/context/browser": {
       "post": {
         "summary": "Get Browser Context",
-        "description": "Used by SDK to get browser context from Stanza Hub.",
+        "description": "Used by SDK to get a Browser Context from Stanza Hub.",
         "operationId": "ConfigService_GetBrowserContext",
         "responses": {
           "200": {
@@ -237,7 +237,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "GetBrowserContextRequest is the request from Browser SDKs to Hub for a browser config.\nSDKs are expected to periodically poll, giving the version of the most recent configuration seen.\nConfigurations may be large; we will not re-send them unless they have changed.\nIf no feature_names are specified, all Features belonging to the organisation will be returned.\n\nRequired Header: X-Stanza-Key\nOptional Header: etag",
+            "description": "The request from Browser SDKs for a Browser Context. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.",
             "in": "body",
             "required": true,
             "schema": {
@@ -735,10 +735,10 @@
       "properties": {
         "feature": {
           "$ref": "#/definitions/v1FeatureSelector",
-          "description": "Information required to select and return the most recent BrowserContext version. If Feature names is nil, will return all Features in the organisation associated with the bearer token/API key, otherwise only information related to the named Features will be returned."
+          "description": "Information required to select and return the most recent BrowserContext version. If Feature names is nil, will return all Features in the organization associated with the bearer token/API key, otherwise only information related to the named Features will be returned."
         }
       },
-      "description": "GetBrowserContextRequest is the request from Browser SDKs to Hub for a browser config.\nSDKs are expected to periodically poll, giving the version of the most recent configuration seen.\nConfigurations may be large; we will not re-send them unless they have changed.\nIf no feature_names are specified, all Features belonging to the organisation will be returned.\n\nRequired Header: X-Stanza-Key\nOptional Header: etag"
+      "description": "The request from Browser SDKs for a Browser Context. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed."
     },
     "v1GetBrowserContextResponse": {
       "type": "object",
@@ -751,7 +751,7 @@
           }
         }
       },
-      "description": "GetBrowserConfigResponse is the response from Hub to Browser SDKs. It is designed to be cacheable for short periods. It is also designed to be shareable between multiple clients (e.g. in case of SSR or use of CDN etc).\n\nReturns etag header.\n\nMay return 304 Not Modified with etag header and empty payload."
+      "description": "The response to Browser SDKs is designed to be cacheable for short periods. It is also designed to be shareable between multiple clients (e.g. in case of SSR or use of CDN etc). May return 304 Not Modified with ETag header and empty payload."
     },
     "v1GetDecoratorConfigRequest": {
       "type": "object",
@@ -765,7 +765,7 @@
           "description": "Information required to select and return the correct DecoratorConfig version."
         }
       },
-      "description": "GetDecoratorConfigRequest is the request from Backend SDKs to Hub for an decorator's config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen/. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between envs. Decorator configurations are SHARED between Services, but may be overridden for specific Services.\n\nRequired Header: X-Stanza-Key"
+      "description": "Request from Backend SDKs for a Decorator Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between environments but are SHARED between Services."
     },
     "v1GetDecoratorConfigResponse": {
       "type": "object",
@@ -780,7 +780,7 @@
           "$ref": "#/definitions/v1DecoratorConfig"
         }
       },
-      "description": "GetDecoratorConfigResponse is the response from Hub to Backend SDKs.\nNote that `config_data_sent` will be false and `config` will be empty if we did not have a newer config\nversion than `version_seen`."
+      "description": "The response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`."
     },
     "v1GetServiceConfigRequest": {
       "type": "object",
@@ -794,7 +794,7 @@
           "title": "Information required to select and return the most recent ServiceConfig version"
         }
       },
-      "description": "GetServiceConfigRequest is the request from Backend SDKs to Hub for a service config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.\n\nRequired Header: X-Stanza-Key"
+      "description": "The request from Backend SDKs for a Service Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed."
     },
     "v1GetServiceConfigResponse": {
       "type": "object",
@@ -809,7 +809,7 @@
           "$ref": "#/definitions/v1ServiceConfig"
         }
       },
-      "description": "GetServiceConfigResponse is the response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`."
+      "description": "The response to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`."
     },
     "v1GetTokenLeaseRequest": {
       "type": "object",
