@@ -20,10 +20,13 @@ option go_package = "stanza/hub/v1;hubpb";
 // This service is used by the Browser SDK to get Browser Contexts.
 service ConfigService {
   rpc GetDecoratorConfig(GetDecoratorConfigRequest) returns (GetDecoratorConfigResponse) {
-    option (google.api.http) = {get: "/v1/config/decorator"};
+    option (google.api.http) = {
+      post: "/v1/config/decorator"
+      body: "*"
+    };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get decorator config"
-      description: "Get decorator config from Stanza Hub."
+      summary: "Get Decorator Config"
+      description: "Used by SDK to get decorator config from Stanza Hub."
       responses: {
         key: "200"
         value: {
@@ -36,10 +39,13 @@ service ConfigService {
     };
   }
   rpc GetBrowserContext(GetBrowserContextRequest) returns (GetBrowserContextResponse) {
-    option (google.api.http) = {get: "/v1/context/browser"};
+    option (google.api.http) = {
+      post: "/v1/context/browser"
+      body: "*"
+    };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get browser context"
-      description: "Get browser context from Stanza Hub."
+      summary: "Get Browser Context"
+      description: "Used by SDK to get browser context from Stanza Hub."
       responses: {
         key: "200"
         value: {
@@ -72,10 +78,13 @@ service ConfigService {
     };
   }
   rpc GetServiceConfig(GetServiceConfigRequest) returns (GetServiceConfigResponse) {
-    option (google.api.http) = {get: "/v1/config/service"};
+    option (google.api.http) = {
+      post: "/v1/config/service"
+      body: "*"
+    };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get service config"
-      description: "Get service config from Stanza Hub."
+      summary: "Get Service Config"
+      description: "Used by SDK to get service config from Stanza Hub."
       responses: {
         key: "200"
         value: {
@@ -103,7 +112,7 @@ message GetDecoratorConfigRequest {
   optional string version_seen = 1;
 
   // Information required to select and return the correct DecoratorConfig version.
-  DecoratorServiceSelector s = 2;
+  DecoratorServiceSelector selector = 2;
 }
 
 // GetDecoratorConfigResponse is the response from Hub to Backend SDKs.

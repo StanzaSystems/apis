@@ -42,6 +42,15 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     }
   }
   responses: {
+    key: "500"
+    value: {
+      description: "Internal Server Error"
+      schema: {
+        json_schema: {ref: "#/definitions/rpcStatus"}
+      }
+    }
+  }
+  responses: {
     key: "503"
     value: {
       description: "Service Unavailable, try again after Retry-After."
