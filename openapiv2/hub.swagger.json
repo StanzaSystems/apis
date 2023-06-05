@@ -928,15 +928,7 @@
       "properties": {
         "collectorUrl": {
           "type": "string",
-          "title": "url of OTEL collector - grpc"
-        },
-        "collectorKey": {
-          "type": "string",
-          "title": "send as x-stanza-key header"
-        },
-        "collectorUrlHttp": {
-          "type": "string",
-          "title": "url of OTEL collector - HTTP"
+          "description": "URL of OTEL metric collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector."
         }
       }
     },
@@ -1145,11 +1137,7 @@
       "properties": {
         "collectorUrl": {
           "type": "string",
-          "title": "url of OTEL collector - grpc"
-        },
-        "collectorKey": {
-          "type": "string",
-          "title": "send as x-stanza-key header"
+          "description": "URL of OTEL trace collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector."
         },
         "sampleRateDefault": {
           "type": "number",
@@ -1179,10 +1167,6 @@
             "$ref": "#/definitions/v1ParamTraceConfig"
           },
           "title": "which parameters to capture"
-        },
-        "collectorUrlHttp": {
-          "type": "string",
-          "title": "url of OTEL collector - HTTP"
         }
       }
     },
