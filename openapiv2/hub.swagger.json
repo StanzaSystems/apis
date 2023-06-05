@@ -928,7 +928,7 @@
       "properties": {
         "collectorUrl": {
           "type": "string",
-          "title": "URL of OTEL metric collector"
+          "description": "URL of OTEL metric collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector."
         }
       }
     },
@@ -1137,7 +1137,7 @@
       "properties": {
         "collectorUrl": {
           "type": "string",
-          "title": "URL of OTEL trace collector"
+          "description": "URL of OTEL trace collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector."
         },
         "sampleRateDefault": {
           "type": "number",
