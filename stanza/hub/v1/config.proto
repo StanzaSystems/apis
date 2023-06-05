@@ -214,19 +214,15 @@ message ServiceConfig {
 ///////////////////////////////////////////////////////////////////////////////
 
 message TraceConfig {
-  optional string collector_url = 1; // url of OTEL collector - grpc
-  optional string collector_key = 2; // send as x-stanza-key header
+  optional string collector_url = 1; // URL of OTEL trace collector
   optional float sample_rate_default = 3; // default base sampling rate
   repeated TraceConfigOverride overrides = 4; // span sampling rate overrides
   repeated HeaderTraceConfig header_sample_configs = 5; // which headers to capture
   repeated ParamTraceConfig param_sample_configs = 6; // which parameters to capture
-  optional string collector_url_http = 7; // url of OTEL collector - HTTP
 }
 
 message MetricConfig {
-  optional string collector_url = 1; // url of OTEL collector - grpc
-  optional string collector_key = 2; // send as x-stanza-key header
-  optional string collector_url_http = 3; // url of OTEL collector - HTTP
+  optional string collector_url = 1; // URL of OTEL metric collector
 }
 
 // SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types. These rules are "per service" (not per Decorator) with Decorator specific routing encoded in the given JSON blobs (as Sentinel "Resources").
