@@ -833,11 +833,17 @@
           "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the default request weight which should be assumed for leases. If not specified, then the median weight is used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.\n\ndefault_weight is optional; if not used then it is assumed that all requests have weight of 1."
         }
       },
-      "description": "Requests token lease for given decorator at priority of specified feature."
+      "description": "Requests token lease for given decorator at priority of specified feature.",
+      "required": [
+        "selector"
+      ]
     },
     "v1GetTokenLeaseResponse": {
       "type": "object",
       "properties": {
+        "granted": {
+          "type": "boolean"
+        },
         "leases": {
           "type": "array",
           "items": {
@@ -846,7 +852,10 @@
           }
         }
       },
-      "title": "Specifies tokens granted and their duration (may be empty if none granted)"
+      "title": "Specifies tokens granted and their duration (may be empty if none granted)",
+      "required": [
+        "granted"
+      ]
     },
     "v1GetTokenRequest": {
       "type": "object",
@@ -870,7 +879,10 @@
           "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.\n\nweight is optional; if not used then it is assumed that all requests have weight of 1."
         }
       },
-      "description": "Requests token for given decorator at priority of specified feature."
+      "description": "Requests token for given decorator at priority of specified feature.",
+      "required": [
+        "selector"
+      ]
     },
     "v1GetTokenResponse": {
       "type": "object",
@@ -885,7 +897,10 @@
           "$ref": "#/definitions/v1Reason"
         }
       },
-      "description": "Specifies whether token granted."
+      "description": "Specifies whether token granted.",
+      "required": [
+        "granted"
+      ]
     },
     "v1HeaderTraceConfig": {
       "type": "object",
