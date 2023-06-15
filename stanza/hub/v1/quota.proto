@@ -99,7 +99,7 @@ service QuotaService {
 // Requests token for given decorator at priority of specified feature.
 message GetTokenRequest {
   // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.
-  DecoratorFeatureSelector selector = 1;
+  DecoratorFeatureSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
   // Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.
   optional string client_id = 4;
   // Used to increase or decrease priority of request, relative to normal feature priority.
@@ -112,15 +112,15 @@ message GetTokenRequest {
 
 // Specifies whether token granted.
 message GetTokenResponse {
-  bool granted = 1;
-  string token = 2;
-  Reason reason = 3;
+  bool granted = 1 [(google.api.field_behavior) = REQUIRED];
+  optional string token = 2;
+  optional Reason reason = 3;
 }
 
 // Requests token lease for given decorator at priority of specified feature.
 message GetTokenLeaseRequest {
   // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.
-  DecoratorFeatureSelector selector = 1;
+  DecoratorFeatureSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
   // Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.
   optional string client_id = 4;
   // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
@@ -133,7 +133,8 @@ message GetTokenLeaseRequest {
 
 // Specifies tokens granted and their duration (may be empty if none granted)
 message GetTokenLeaseResponse {
-  repeated TokenLease leases = 1;
+  bool granted = 1 [(google.api.field_behavior) = REQUIRED];
+  repeated TokenLease leases = 2;
 }
 
 message TokenLease {
