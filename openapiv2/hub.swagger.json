@@ -1115,7 +1115,8 @@
       "properties": {
         "durationMsec": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "title": "How long until lease expires, in milliseconds"
         },
         "token": {
           "type": "string"
@@ -1133,6 +1134,11 @@
         },
         "reason": {
           "$ref": "#/definitions/v1Reason"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "If nil expiration should be calculated as time you received the lease + duration_msec"
         }
       }
     },
