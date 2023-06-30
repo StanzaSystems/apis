@@ -202,6 +202,7 @@ message GetServiceConfigResponse {
 
 // ServiceConfig represents a configuration for a given Stanza SDK instrumented service.
 message ServiceConfig {
+  optional string customer_id = 1;
   optional TraceConfig trace_config = 3;
   optional MetricConfig metric_config = 4;
   optional SentinelConfig sentinel_config = 5;

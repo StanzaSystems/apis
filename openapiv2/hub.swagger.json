@@ -1022,6 +1022,9 @@
     "v1ServiceConfig": {
       "type": "object",
       "properties": {
+        "customerId": {
+          "type": "string"
+        },
         "traceConfig": {
           "$ref": "#/definitions/v1TraceConfig"
         },
