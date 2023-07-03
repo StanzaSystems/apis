@@ -1109,8 +1109,8 @@
     "v1QueryMode": {
       "type": "string",
       "enum": [
-        "MODE_SUM",
-        "MODE_REPORT"
+        "QUERY_MODE_SUM",
+        "QUERY_MODE_REPORT"
       ],
       "description": "MODE_SUM: query results across various axes (features, tags, apikeys) are added up and one timeseries is returned.\nMODE_REPORT: individual timeseries are returned for specified query axes.\nIf not specified then queries will default to MODE_SUM for all axes."
     },

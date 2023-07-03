@@ -4,7 +4,6 @@ package stanza.hub.v1;
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
-import "protoc-gen-openapiv2/options/annotations.proto";
 import "stanza/hub/v1/common.proto";
 
 option go_package = "stanza/hub/v1;hubpb";
@@ -74,7 +73,7 @@ message UsageTSDataPoint {
 // MODE_REPORT: individual timeseries are returned for specified query axes.
 // If not specified then queries will default to MODE_SUM for all axes.
 enum QueryMode {
-  MODE_UNSPECIFIED = 0;
-  MODE_SUM = 1;
-  MODE_REPORT = 2;
+  QUERY_MODE_UNSPECIFIED = 0;
+  QUERY_MODE_SUM = 1;
+  QUERY_MODE_REPORT = 2;
 }
