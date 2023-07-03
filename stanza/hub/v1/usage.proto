@@ -1,0 +1,80 @@
+syntax = "proto3";
+package stanza.hub.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "stanza/hub/v1/common.proto";
+
+option go_package = "stanza/hub/v1;hubpb";
+
+// Used to get statistics on usage from Stanza, sliced and diced in various ways.
+service UsageService {
+  rpc GetUsage(GetUsageRequest) returns (GetUsageResponse) {
+    option (google.api.http) = {
+      post: "/v1/usage"
+      body: "*"
+    };
+  }
+}
+
+// Usage query.
+message GetUsageRequest {
+  // If specified, only stats relating to the tags and features in selector will be returned.
+  //  If only decorator and environment are specified, then stats relating to all tags and features will be returned.
+  DecoratorSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
+  optional QueryMode decorator_query_mode = 2;
+  google.protobuf.Timestamp start_ts = 3 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.Timestamp end_ts = 4 [(google.api.field_behavior) = REQUIRED];
+
+  optional string apikey = 5; // Query for stats where this specific APIKey was used. If not specified then stats for all APIKeys are returned.
+  optional QueryMode apikey_query_mode = 6;
+
+  optional string feature = 7; // Query for stats about a specific feature. If not specified then stats for all features are returned.
+  optional QueryMode feature_query_mode = 8;
+
+  optional int32 priority = 9; // Query for stats about a specific priority level. If not specified then stats for all priorities are returned.
+  optional QueryMode priority_query_mode = 10;
+
+  repeated string report_tags = 11; // Listed tags will be reported (individual timeseries returned for each value).
+}
+
+message GetUsageResponse {
+  repeated UsageTimeseries result = 1;  
+}
+
+message UsageTimeseries {
+    repeated UsageTSDataPoint data = 1;
+    // Axes for this timeseries - may not be applicable if there are no axes being queried in report mode
+    optional string apikey = 2;
+    optional string feature = 3;
+    optional int32 priority = 4;
+    repeated Tag tags = 5;
+}
+
+message UsageTSDataPoint {
+  google.protobuf.Timestamp start_ts = 1;
+  google.protobuf.Timestamp end_ts = 2;
+  
+  int32 granted = 3;
+  float granted_weight = 4;
+  
+  int32 not_granted = 5;
+  float not_granted_weight = 6;
+  
+  optional int32 be_burst = 7;
+  optional float be_burst_weight = 8;
+  
+  optional int32 parent_reject = 9;
+  optional float parent_reject_weight = 10;
+}
+
+// MODE_SUM: query results across various axes (features, tags, apikeys) are added up and one timeseries is returned.
+// MODE_REPORT: individual timeseries are returned for specified query axes.
+// If not specified then queries will default to MODE_SUM for all axes.
+enum QueryMode {
+  MODE_UNSPECIFIED = 0;
+  MODE_SUM = 1;
+  MODE_REPORT = 2;
+}
