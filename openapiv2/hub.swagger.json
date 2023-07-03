@@ -21,6 +21,9 @@
     },
     {
       "name": "QuotaService"
+    },
+    {
+      "name": "UsageService"
     }
   ],
   "schemes": [
@@ -514,6 +517,51 @@
           "QuotaService"
         ]
       }
+    },
+    "/v1/usage": {
+      "post": {
+        "operationId": "UsageService_GetUsage",
+        "responses": {
+          "429": {
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "Usage query.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetUsageRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsageService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -902,6 +950,73 @@
         "granted"
       ]
     },
+    "v1GetUsageRequest": {
+      "type": "object",
+      "properties": {
+        "selector": {
+          "$ref": "#/definitions/v1DecoratorSelector",
+          "description": "If specified, only stats relating to the tags and features in selector will be returned.\n If only decorator and environment are specified, then stats relating to all tags and features will be returned."
+        },
+        "decoratorQueryMode": {
+          "$ref": "#/definitions/v1QueryMode"
+        },
+        "startTs": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endTs": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "apikey": {
+          "type": "string",
+          "description": "Query for stats where this specific APIKey was used. If not specified then stats for all APIKeys are returned."
+        },
+        "apikeyQueryMode": {
+          "$ref": "#/definitions/v1QueryMode"
+        },
+        "feature": {
+          "type": "string",
+          "description": "Query for stats about a specific feature. If not specified then stats for all features are returned."
+        },
+        "featureQueryMode": {
+          "$ref": "#/definitions/v1QueryMode"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Query for stats about a specific priority level. If not specified then stats for all priorities are returned."
+        },
+        "priorityQueryMode": {
+          "$ref": "#/definitions/v1QueryMode"
+        },
+        "reportTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Listed tags will be reported (individual timeseries returned for each value)."
+        }
+      },
+      "description": "Usage query.",
+      "required": [
+        "selector",
+        "startTs",
+        "endTs"
+      ]
+    },
+    "v1GetUsageResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1UsageTimeseries"
+          }
+        }
+      }
+    },
     "v1HeaderTraceConfig": {
       "type": "object",
       "properties": {
@@ -990,6 +1105,14 @@
           "$ref": "#/definitions/v1Health"
         }
       }
+    },
+    "v1QueryMode": {
+      "type": "string",
+      "enum": [
+        "QUERY_MODE_SUM",
+        "QUERY_MODE_REPORT"
+      ],
+      "description": "MODE_SUM: query results across various axes (features, tags, apikeys) are added up and one timeseries is returned.\nMODE_REPORT: individual timeseries are returned for specified query axes.\nIf not specified then queries will default to MODE_SUM for all axes."
     },
     "v1Reason": {
       "type": "string",
@@ -1210,6 +1333,81 @@
         }
       },
       "description": "This configuration allows different sample rates to be applied to selected spans."
+    },
+    "v1UsageTSDataPoint": {
+      "type": "object",
+      "properties": {
+        "startTs": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endTs": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "granted": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "grantedWeight": {
+          "type": "number",
+          "format": "float"
+        },
+        "notGranted": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "notGrantedWeight": {
+          "type": "number",
+          "format": "float"
+        },
+        "beBurst": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "beBurstWeight": {
+          "type": "number",
+          "format": "float"
+        },
+        "parentReject": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "parentRejectWeight": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "v1UsageTimeseries": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1UsageTSDataPoint"
+          }
+        },
+        "apikey": {
+          "type": "string",
+          "title": "Axes for this timeseries - may not be applicable if there are no axes being queried in report mode"
+        },
+        "feature": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      }
     },
     "v1ValidateTokenRequest": {
       "type": "object",
