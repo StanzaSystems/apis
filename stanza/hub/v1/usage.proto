@@ -40,31 +40,31 @@ message GetUsageRequest {
 }
 
 message GetUsageResponse {
-  repeated UsageTimeseries result = 1;  
+  repeated UsageTimeseries result = 1;
 }
 
 message UsageTimeseries {
-    repeated UsageTSDataPoint data = 1;
-    // Axes for this timeseries - may not be applicable if there are no axes being queried in report mode
-    optional string apikey = 2;
-    optional string feature = 3;
-    optional int32 priority = 4;
-    repeated Tag tags = 5;
+  repeated UsageTSDataPoint data = 1;
+  // Axes for this timeseries - may not be applicable if there are no axes being queried in report mode
+  optional string apikey = 2;
+  optional string feature = 3;
+  optional int32 priority = 4;
+  repeated Tag tags = 5;
 }
 
 message UsageTSDataPoint {
   google.protobuf.Timestamp start_ts = 1;
   google.protobuf.Timestamp end_ts = 2;
-  
+
   int32 granted = 3;
   float granted_weight = 4;
-  
+
   int32 not_granted = 5;
   float not_granted_weight = 6;
-  
+
   optional int32 be_burst = 7;
   optional float be_burst_weight = 8;
-  
+
   optional int32 parent_reject = 9;
   optional float parent_reject_weight = 10;
 }
