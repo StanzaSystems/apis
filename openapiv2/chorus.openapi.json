@@ -1,0 +1,1311 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Stanza Chorus API",
+    "description": "Stanza's api for managing configuration"
+  },
+  "servers": [
+    {
+      "url": "https://api.demo.getstanza.io/v1"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "DecoratorMetadata": {
+        "type": "object",
+        "properties": {
+          "traceConfig": {
+            "$ref": "#/components/schemas/TraceConfig"
+          },
+          "quotaConfig": {
+            "$ref": "#/components/schemas/QuotaConfig"
+          }
+        }
+      },
+      "TraceConfig": {
+        "type": "object",
+        "properties": {
+          "collectorUrl": {
+            "type": "string",
+            "title": "url of OTEL collector - grpc"
+          },
+          "collectorKey": {
+            "type": "string",
+            "title": "send as x-stanza-key header"
+          },
+          "sampleRateDefault": {
+            "type": "number",
+            "format": "float",
+            "title": "default base sampling rate"
+          },
+          "overrides": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/components/schemas/TraceConfigOverride"
+            },
+            "title": "span sampling rate overrides"
+          },
+          "headerSampleConfigs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/components/schemas/HeaderTraceConfig"
+            },
+            "title": "which headers to capture"
+          },
+          "paramSampleConfigs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/components/schemas/ParamTraceConfig"
+            },
+            "title": "which parameters to capture"
+          },
+          "collectorUrlHttp": {
+            "type": "string",
+            "title": "url of OTEL collector - HTTP"
+          }
+        }
+      },
+      "QuotaConfig": {
+        "type": "object",
+        "properties": {
+          "refillRate": {
+            "type": "integer",
+            "format": "int64",
+            "title": "deprecated, use RateLimitConfig"
+          },
+          "burst": {
+            "type": "integer",
+            "format": "int64",
+            "title": "// deprecated, use RateLimitConfig"
+          },
+          "strictSynchronous": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Boolean representing whether or not quota checks are enabled."
+          },
+          "rateLimitConfig": {
+            "$ref": "#/components/schemas/RateLimitConfig",
+            "description": "Rate limits applying at this level of the quota tree. If not present, child rate limits\n  may be enforced at lower levels of the tree."
+          },
+          "tagConfig": {
+            "$ref": "#/components/schemas/TagConfig",
+            "description": "Tag which applies to this level of the quota tree. For instance, this could be a tag \"tier\"."
+          },
+          "childQuotaConfigs": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/QuotaConfig"
+            },
+            "description": "Child quota limits. Specified by tag name and value mapping to a child quota configuration.\n  For example, you might specify limits for your free tier and your paid tier, in order to\n  prevent excessive use by free tier customers from impacting your paid tier.\n  Tag name and value in the map key should be specified as \"name=value\", e.g. \"tier=free\"."
+          },
+          "childDefaultConfigs": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/RateLimitConfig"
+            },
+            "description": "Default quota limits for child quotas. Each different tag value (unless specified in child_quota_configs)\n  will be assigned a separate instance of this rate limit configuration. This is a good place\n  to specify default per-customer or per-team limits. Map key is the name of the tag, e.g. \"team_id\"."
+          }
+        },
+        "description": "Describes quota limits for a Decorator. These form a tree of nested quota limits.\nTODO(Laura): link to examples in our docs."
+      },
+      "RateLimitConfig": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "burst": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bestEffortBurst": {
+            "type": "boolean",
+            "description": "If this is set to true then requests will be permitted to proceed as long as the parent quota\n  is not saturated. Requests served as best effort will be tracked specifically in Stanza metrics."
+          }
+        }
+      },
+      "TagConfig": {
+        "type": "object",
+        "properties": {
+          "tagName": {
+            "type": "string"
+          },
+          "tagOptional": {
+            "type": "boolean",
+            "description": "If tag_optional is not set to true, then all requests which do not have the specified tag\n  will be refused quota. For optional tags, all untagged requests will be assigned to either\n  an instance of the child_default_configs rate limit, or to the specified child_quota_configs\n  (if there is an instance of child_quota_configs with the tag value as empty)."
+          }
+        }
+      },
+      "ServiceMetadata": {
+        "type": "object",
+        "properties": {
+          "traceConfig": {
+            "$ref": "#/components/schemas/TraceConfig"
+          },
+          "metricConfig": {
+            "$ref": "#/components/schemas/MetricConfig"
+          },
+          "sentinelConfig": {
+            "$ref": "#/components/schemas/SentinelConfig"
+          }
+        }
+      },
+      "MetricConfig": {
+        "type": "object",
+        "properties": {
+          "collectorUrl": {
+            "type": "string",
+            "title": "url of OTEL collector - grpc"
+          },
+          "collectorKey": {
+            "type": "string",
+            "title": "send as x-stanza-key header"
+          },
+          "collectorUrlHttp": {
+            "type": "string",
+            "title": "url of OTEL collector - HTTP"
+          }
+        }
+      },
+      "SentinelConfig": {
+        "type": "object",
+        "properties": {
+          "circuitbreakerRulesJson": {
+            "type": "string"
+          },
+          "flowRulesJson": {
+            "type": "string"
+          },
+          "isolationRulesJson": {
+            "type": "string"
+          },
+          "systemRulesJson": {
+            "type": "string"
+          }
+        },
+        "description": "SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types. These rules are \"per service\" (not per Decorator) with Decorator specific routing encoded in the given JSON blobs (as Sentinel \"Resources\")."
+      },
+      "TraceConfigOverride": {
+        "type": "object",
+        "properties": {
+          "sampleRate": {
+            "type": "number",
+            "format": "float"
+          },
+          "spanSelectors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/components/schemas/SpanSelector"
+            }
+          }
+        },
+        "description": "This configuration allows different sample rates to be applied to selected spans."
+      },
+      "HeaderTraceConfig": {
+        "type": "object",
+        "properties": {
+          "spanSelectors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/components/schemas/SpanSelector"
+            },
+            "title": "If no selectors specified then config is applied to all requests"
+          },
+          "requestHeaderNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "Names of headers to collect"
+          },
+          "responseHeaderNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "Names of headers to collect"
+          }
+        },
+        "description": "Specifies which headers should be sampled - required by OTel spec."
+      },
+      "ParamTraceConfig": {
+        "type": "object",
+        "properties": {
+          "spanSelectors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "$ref": "#/components/schemas/SpanSelector"
+            },
+            "title": "If no selectors specified then config is applied to all requests"
+          },
+          "parameterNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "title": "Names of parameters to collect"
+          }
+        },
+        "description": "Specifies which request parameters should be sampled."
+      },
+      "SpanSelector": {
+        "type": "object",
+        "properties": {
+          "otelAttribute": {
+            "type": "string",
+            "title": "OTel attribute, e.g. peer.service, status, http.status_code. See:\nhttps://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/\nhttps://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/"
+          },
+          "value": {
+            "type": "string",
+            "description": "Selector matches if value of 'otel_attribute' equals 'value'."
+          }
+        }
+      },
+      "Decorator": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "guardedServiceId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "networkTrafficType": {
+            "type": "string",
+            "enum": [
+              "INBOUND",
+              "OUTBOUND",
+              "INTERNAL"
+            ]
+          },
+          "health": {
+            "type": "string",
+            "enum": [
+              "HEALTH_UNSPECIFIED",
+              "HEALTH_OK",
+              "HEALTH_OVERLOAD",
+              "HEALTH_DOWN"
+            ]
+          },
+          "configMetadata": {
+            "nullable": true
+          },
+          "createdFromTemplateId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "environmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stanzaCustomerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "usedByFeatures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "environment": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "health": {
+                  "type": "string",
+                  "enum": [
+                    "HEALTH_UNSPECIFIED",
+                    "HEALTH_OK",
+                    "HEALTH_OVERLOAD",
+                    "HEALTH_DOWN"
+                  ]
+                }
+              }
+            }
+          },
+          "healthsByPriority": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "priority": {
+                  "type": "number"
+                },
+                "health": {
+                  "type": "string",
+                  "enum": [
+                    "HEALTH_UNSPECIFIED",
+                    "HEALTH_OK",
+                    "HEALTH_OVERLOAD",
+                    "HEALTH_DOWN"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "name",
+          "networkTrafficType",
+          "projectId",
+          "environmentId"
+        ]
+      },
+      "Feature": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "environmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stanzaCustomerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actionCodeDisabled": {
+            "type": "number"
+          },
+          "actionCodeEnabled": {
+            "type": "number"
+          },
+          "autoUpdate": {
+            "type": "boolean"
+          },
+          "enabledPercent": {
+            "type": "number"
+          },
+          "health": {
+            "type": "string",
+            "enum": [
+              "HEALTH_UNSPECIFIED",
+              "HEALTH_OK",
+              "HEALTH_OVERLOAD",
+              "HEALTH_DOWN"
+            ]
+          },
+          "healthUpdater": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "AUTOMATION"
+            ]
+          },
+          "messageDisabled": {
+            "type": "string"
+          },
+          "messageEnabled": {
+            "type": "string"
+          },
+          "decoratorInfos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "environment": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "health": {
+                  "type": "string",
+                  "enum": [
+                    "HEALTH_UNSPECIFIED",
+                    "HEALTH_OK",
+                    "HEALTH_OVERLOAD",
+                    "HEALTH_DOWN"
+                  ]
+                },
+                "healthsByPriority": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "priority": {
+                        "type": "number"
+                      },
+                      "health": {
+                        "type": "string",
+                        "enum": [
+                          "HEALTH_UNSPECIFIED",
+                          "HEALTH_OK",
+                          "HEALTH_OVERLOAD",
+                          "HEALTH_DOWN"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "name",
+          "priority",
+          "projectId",
+          "environmentId"
+        ]
+      },
+      "Environment": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "isProd": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "stanzaCustomerId": {
+            "type": "string"
+          }
+        }
+      },
+      "FeatureAutoUpdateRule": {
+        "type": "object",
+        "properties": {
+          "featureId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "health": {
+            "type": "string",
+            "enum": [
+              "HEALTH_UNSPECIFIED",
+              "HEALTH_OK",
+              "HEALTH_OVERLOAD",
+              "HEALTH_DOWN"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "targetState": {
+            "type": "string",
+            "enum": [
+              "STATE_ENABLED",
+              "STATE_DISABLED"
+            ]
+          },
+          "targetActionCode": {
+            "type": "integer",
+            "nullable": true
+          },
+          "targetMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "featureId",
+          "health",
+          "enabled",
+          "targetState"
+        ]
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stanzaCustomerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "environmentIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Key": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "stanzaCustomerId": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "Browser",
+              "API"
+            ]
+          },
+          "environmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "lastSeenAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "environmentId",
+          "projectId"
+        ]
+      },
+      "Service": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stanzaCustomerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "environmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "external": {
+            "type": "boolean"
+          },
+          "health": {
+            "type": "string",
+            "enum": [
+              "HEALTH_UNSPECIFIED",
+              "HEALTH_OK",
+              "HEALTH_OVERLOAD",
+              "HEALTH_DOWN"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "metadata": {
+            "nullable": true
+          }
+        },
+        "required": [
+          "environmentId",
+          "name",
+          "projectId"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/decorators/{decoratorId}": {
+      "get": {
+        "description": "Get decorator by its id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "decoratorId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stanza Decorator Object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "guardedServiceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "networkTrafficType": {
+                      "type": "string",
+                      "enum": [
+                        "INBOUND",
+                        "OUTBOUND",
+                        "INTERNAL"
+                      ]
+                    },
+                    "health": {
+                      "type": "string",
+                      "enum": [
+                        "HEALTH_UNSPECIFIED",
+                        "HEALTH_OK",
+                        "HEALTH_OVERLOAD",
+                        "HEALTH_DOWN"
+                      ]
+                    },
+                    "configMetadata": {
+                      "nullable": true
+                    },
+                    "createdFromTemplateId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "projectId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "environmentId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "stanzaCustomerId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "usedByFeatures": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "environment": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "health": {
+                            "type": "string",
+                            "enum": [
+                              "HEALTH_UNSPECIFIED",
+                              "HEALTH_OK",
+                              "HEALTH_OVERLOAD",
+                              "HEALTH_DOWN"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "healthsByPriority": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "priority": {
+                            "type": "number"
+                          },
+                          "health": {
+                            "type": "string",
+                            "enum": [
+                              "HEALTH_UNSPECIFIED",
+                              "HEALTH_OK",
+                              "HEALTH_OVERLOAD",
+                              "HEALTH_DOWN"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "networkTrafficType",
+                    "projectId",
+                    "environmentId"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Create decorator",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "decoratorId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "guardedServiceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "format": "uuid"
+                  },
+                  "networkTrafficType": {
+                    "type": "string",
+                    "enum": [
+                      "INBOUND",
+                      "OUTBOUND",
+                      "INTERNAL"
+                    ]
+                  },
+                  "health": {
+                    "type": "string",
+                    "enum": [
+                      "HEALTH_UNSPECIFIED",
+                      "HEALTH_OK",
+                      "HEALTH_OVERLOAD",
+                      "HEALTH_DOWN"
+                    ]
+                  },
+                  "configMetadata": {
+                    "nullable": true
+                  },
+                  "createdFromTemplateId": {
+                    "type": "string",
+                    "nullable": true,
+                    "format": "uuid"
+                  },
+                  "projectId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "environmentId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "stanzaCustomerId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "usedByFeatures": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "environment": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "health": {
+                          "type": "string",
+                          "enum": [
+                            "HEALTH_UNSPECIFIED",
+                            "HEALTH_OK",
+                            "HEALTH_OVERLOAD",
+                            "HEALTH_DOWN"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "healthsByPriority": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "priority": {
+                          "type": "number"
+                        },
+                        "health": {
+                          "type": "string",
+                          "enum": [
+                            "HEALTH_UNSPECIFIED",
+                            "HEALTH_OK",
+                            "HEALTH_OVERLOAD",
+                            "HEALTH_DOWN"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "networkTrafficType",
+                  "projectId",
+                  "environmentId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stanza Decorator Object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "guardedServiceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "networkTrafficType": {
+                      "type": "string",
+                      "enum": [
+                        "INBOUND",
+                        "OUTBOUND",
+                        "INTERNAL"
+                      ]
+                    },
+                    "health": {
+                      "type": "string",
+                      "enum": [
+                        "HEALTH_UNSPECIFIED",
+                        "HEALTH_OK",
+                        "HEALTH_OVERLOAD",
+                        "HEALTH_DOWN"
+                      ]
+                    },
+                    "configMetadata": {
+                      "nullable": true
+                    },
+                    "createdFromTemplateId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "projectId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "environmentId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "stanzaCustomerId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "usedByFeatures": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "environment": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "health": {
+                            "type": "string",
+                            "enum": [
+                              "HEALTH_UNSPECIFIED",
+                              "HEALTH_OK",
+                              "HEALTH_OVERLOAD",
+                              "HEALTH_DOWN"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "healthsByPriority": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "priority": {
+                            "type": "number"
+                          },
+                          "health": {
+                            "type": "string",
+                            "enum": [
+                              "HEALTH_UNSPECIFIED",
+                              "HEALTH_OK",
+                              "HEALTH_OVERLOAD",
+                              "HEALTH_DOWN"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "networkTrafficType",
+                    "projectId",
+                    "environmentId"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/decorators": {
+      "post": {
+        "description": "Create decorator",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "guardedServiceId": {
+                    "type": "string",
+                    "nullable": true,
+                    "format": "uuid"
+                  },
+                  "networkTrafficType": {
+                    "type": "string",
+                    "enum": [
+                      "INBOUND",
+                      "OUTBOUND",
+                      "INTERNAL"
+                    ]
+                  },
+                  "health": {
+                    "type": "string",
+                    "enum": [
+                      "HEALTH_UNSPECIFIED",
+                      "HEALTH_OK",
+                      "HEALTH_OVERLOAD",
+                      "HEALTH_DOWN"
+                    ]
+                  },
+                  "configMetadata": {
+                    "nullable": true
+                  },
+                  "createdFromTemplateId": {
+                    "type": "string",
+                    "nullable": true,
+                    "format": "uuid"
+                  },
+                  "projectId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "environmentId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "stanzaCustomerId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "usedByFeatures": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "environment": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "health": {
+                          "type": "string",
+                          "enum": [
+                            "HEALTH_UNSPECIFIED",
+                            "HEALTH_OK",
+                            "HEALTH_OVERLOAD",
+                            "HEALTH_DOWN"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "healthsByPriority": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "priority": {
+                          "type": "number"
+                        },
+                        "health": {
+                          "type": "string",
+                          "enum": [
+                            "HEALTH_UNSPECIFIED",
+                            "HEALTH_OK",
+                            "HEALTH_OVERLOAD",
+                            "HEALTH_DOWN"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "networkTrafficType",
+                  "projectId",
+                  "environmentId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stanza Decorator Object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "guardedServiceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "networkTrafficType": {
+                      "type": "string",
+                      "enum": [
+                        "INBOUND",
+                        "OUTBOUND",
+                        "INTERNAL"
+                      ]
+                    },
+                    "health": {
+                      "type": "string",
+                      "enum": [
+                        "HEALTH_UNSPECIFIED",
+                        "HEALTH_OK",
+                        "HEALTH_OVERLOAD",
+                        "HEALTH_DOWN"
+                      ]
+                    },
+                    "configMetadata": {
+                      "nullable": true
+                    },
+                    "createdFromTemplateId": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uuid"
+                    },
+                    "projectId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "environmentId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "stanzaCustomerId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "usedByFeatures": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "environment": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "health": {
+                            "type": "string",
+                            "enum": [
+                              "HEALTH_UNSPECIFIED",
+                              "HEALTH_OK",
+                              "HEALTH_OVERLOAD",
+                              "HEALTH_DOWN"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "healthsByPriority": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "priority": {
+                            "type": "number"
+                          },
+                          "health": {
+                            "type": "string",
+                            "enum": [
+                              "HEALTH_UNSPECIFIED",
+                              "HEALTH_OK",
+                              "HEALTH_OVERLOAD",
+                              "HEALTH_DOWN"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "networkTrafficType",
+                    "projectId",
+                    "environmentId"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
