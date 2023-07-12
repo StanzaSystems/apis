@@ -646,16 +646,9 @@
             "type": "string"
           },
           "description": "The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests."
-        },
-        "traceConfig": {
-          "$ref": "#/definitions/v1TraceConfig",
-          "title": "OTEL"
-        },
-        "metricConfig": {
-          "$ref": "#/definitions/v1MetricConfig"
         }
       },
-      "description": "DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator, which may be used by multiple services!\nIf trace_config is empty, no per-decorator trace configuration is applied. Service-level trace configuration will be used (if applicable).\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point (post V0), there will be additional per-decorator configuration, such as deadline overrides, adaptive circuitbreaking configs, etc."
+      "description": "DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator, which may be used by multiple services!\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point, there will be additional per-decorator configuration, such as deadline overrides, adaptive circuitbreaking configs, etc."
     },
     "v1DecoratorFeatureSelector": {
       "type": "object",

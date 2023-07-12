@@ -121,19 +121,14 @@ message GetDecoratorConfigResponse {
 }
 
 // DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator, which may be used by multiple services!
-// If trace_config is empty, no per-decorator trace configuration is applied. Service-level trace configuration will be used (if applicable).
 // If check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.
-// At a later point (post V0), there will be additional per-decorator configuration, such as deadline overrides, adaptive circuitbreaking configs, etc.
+// At a later point, there will be additional per-decorator configuration, such as deadline overrides, adaptive circuitbreaking configs, etc.
 message DecoratorConfig {
   bool validate_ingress_tokens = 1; // Boolean representing wether to validate contents of the X-Stanza-Token header.
 
   // Quota
   bool check_quota = 5; // Boolean representing whether quota checks are enabled.
   repeated string quota_tags = 6; // The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests.
-
-  // OTEL
-  optional TraceConfig trace_config = 8;
-  optional MetricConfig metric_config = 9;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
