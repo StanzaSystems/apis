@@ -6,6 +6,8 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 import "stanza/hub/v1/common.proto";
 
 option go_package = "stanza/hub/v1;hubpb";
+option java_multiple_files = true;
+option java_package = "org.stanza.hub.v1";
 
 // The Health service definition. This service is used by the Stanza SDK to allow devs to
 //   make decisions about graceful degradation strategies to apply and to make decisions

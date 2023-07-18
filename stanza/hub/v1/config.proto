@@ -6,6 +6,8 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 import "stanza/hub/v1/common.proto";
 
 option go_package = "stanza/hub/v1;hubpb";
+option java_multiple_files = true;
+option java_package = "org.stanza.hub.v1";
 
 // This protocol buffer definition is the source of truth for the Stanza Hub Quota API.
 // There is also an OpenAPI spec, generated via https://github.com/grpc-ecosystem/grpc-gateway.
