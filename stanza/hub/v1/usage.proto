@@ -39,6 +39,7 @@ message GetUsageRequest {
   optional QueryMode priority_query_mode = 10;
 
   repeated string report_tags = 11; // Listed tags will be reported (individual timeseries returned for each value).
+  repeated Tag tags = 12; // Only stats relating to the specified tags will be returned.
 }
 
 message GetUsageResponse {
