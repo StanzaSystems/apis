@@ -7,6 +7,8 @@ import "google/protobuf/timestamp.proto";
 import "stanza/hub/v1/common.proto";
 
 option go_package = "stanza/hub/v1;hubpb";
+option java_multiple_files = true;
+option java_package = "org.stanza.hub.v1";
 
 // Used to get statistics on usage from Stanza, sliced and diced in various ways.
 service UsageService {
