@@ -13,28 +13,28 @@ option java_package = "org.stanza.hub.v1";
 // There is also an OpenAPI spec, generated via https://github.com/grpc-ecosystem/grpc-gateway.
 
 // Config is used by the language-specific Stanza SDKs and Browser SDK to fetch Service and Feature configurations.
-//   DecoratorConfig: Decorator level configuration ()
+//   GuardConfig: Guard level configuration ()
 //   BrowserContext: Whether Feature is enabled or disabled, has centralized ratelimiting, etc
 //   ServiceConfig: Service level configuration (OTEL defaults, Sentinel configs, etc)
 
 // The Config service definition.
-// This service is used by the Stanza SDK to get Service and Decorator configs.
+// This service is used by the Stanza SDK to get Service and Guard configs.
 // This service is used by the Browser SDK to get Browser Contexts.
 service ConfigService {
-  rpc GetDecoratorConfig(GetDecoratorConfigRequest) returns (GetDecoratorConfigResponse) {
+  rpc GetGuardConfig(GetGuardConfigRequest) returns (GetGuardConfigResponse) {
     option (google.api.http) = {
-      post: "/v1/config/decorator"
+      post: "/v1/config/guard"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get Decorator Config"
-      description: "Used by SDK to get a Decorator Config from Stanza Hub."
+      summary: "Get Guard Config"
+      description: "Used by SDK to get a Guard Config from Stanza Hub."
       responses: {
         key: "200"
         value: {
           description: "OK",
           schema: {
-            json_schema: {ref: ".stanza.hub.v1.GetDecoratorConfigResponse"}
+            json_schema: {ref: ".stanza.hub.v1.GetGuardConfigResponse"}
           }
         }
       }
@@ -102,30 +102,30 @@ service ConfigService {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// DECORATOR
+// Guard
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-// Request from Backend SDKs for a Decorator Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between environments but are SHARED between Services.
-message GetDecoratorConfigRequest {
+// Request from Backend SDKs for a Guard Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Guard configurations may vary between environments but are SHARED between Services.
+message GetGuardConfigRequest {
   // Set if the client has seen a previous version of the config. Server will send data only if newer config available.
   optional string version_seen = 1;
 
-  // Information required to select and return the correct DecoratorConfig version.
-  DecoratorServiceSelector selector = 2;
+  // Information required to select and return the correct GuardConfig version.
+  GuardServiceSelector selector = 2;
 }
 
 // The response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`.
-message GetDecoratorConfigResponse {
+message GetGuardConfigResponse {
   string version = 1;
   bool config_data_sent = 2;
-  DecoratorConfig config = 3;
+  GuardConfig config = 3;
 }
 
-// DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator, which may be used by multiple services!
+// GuardConfig represents a configuration for a given Stanza SDK instrumented Guard, which may be used by multiple services!
 // If check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.
-// At a later point, there will be additional per-decorator configuration, such as deadline overrides, adaptive circuitbreaking configs, etc.
-message DecoratorConfig {
+// At a later point, there will be additional per-Guard configuration, such as deadline overrides, adaptive circuitbreaking configs, etc.
+message GuardConfig {
   bool validate_ingress_tokens = 1; // Boolean representing wether to validate contents of the X-Stanza-Token header.
 
   // Quota
@@ -223,7 +223,7 @@ message MetricConfig {
   optional string collector_url = 1; // URL of OTEL metric collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector.
 }
 
-// SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types. These rules are "per service" (not per Decorator) with Decorator specific routing encoded in the given JSON blobs (as Sentinel "Resources").
+// SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types. These rules are "per service" (not per Guard) with Guard specific routing encoded in the given JSON blobs (as Sentinel "Resources").
 message SentinelConfig {
   optional string circuitbreaker_rules_json = 1;
   optional string flow_rules_json = 2;

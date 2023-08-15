@@ -19,20 +19,20 @@ option java_package = "org.stanza.hub.v1";
 // specific to an environment, so we cannot infer the env from the key.
 // Like quota service this should be accessed by SDK via HTTPS.
 service HealthService {
-  rpc QueryDecoratorHealth(QueryDecoratorHealthRequest) returns (QueryDecoratorHealthResponse) {
+  rpc QueryGuardHealth(QueryGuardHealthRequest) returns (QueryGuardHealthResponse) {
     option (google.api.http) = {
-      post: "/v1/health/decorator"
+      post: "/v1/health/guard"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get Decorator Health"
+      summary: "Get Guard Health"
       description: "Used by SDK to allow developers to make decisions about graceful degradation of backend services."
       responses: {
         key: "200"
         value: {
           description: "OK",
           schema: {
-            json_schema: {ref: ".stanza.hub.v1.QueryDecoratorHealthResponse"}
+            json_schema: {ref: ".stanza.hub.v1.QueryGuardHealthResponse"}
           }
         }
       }
@@ -40,15 +40,15 @@ service HealthService {
   }
 }
 
-// Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
-message QueryDecoratorHealthRequest {
-  // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.
-  DecoratorFeatureSelector selector = 1; // Required: decoratorName, featureName, environment
+// Called by SDK to determine whether a Guard is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
+message QueryGuardHealthRequest {
+  // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time.
+  GuardFeatureSelector selector = 1; // Required: GuardName, featureName, environment
 
   // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
   optional int32 priority_boost = 4;
 }
 
-message QueryDecoratorHealthResponse {
+message QueryGuardHealthResponse {
   Health health = 1;
 }
