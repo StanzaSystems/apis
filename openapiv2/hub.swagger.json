@@ -78,16 +78,16 @@
         ]
       }
     },
-    "/v1/config/decorator": {
+    "/v1/config/guard": {
       "post": {
-        "summary": "Get Decorator Config",
-        "description": "Used by SDK to get a Decorator Config from Stanza Hub.",
-        "operationId": "ConfigService_GetDecoratorConfig",
+        "summary": "Get Guard Config",
+        "description": "Used by SDK to get a Guard Config from Stanza Hub.",
+        "operationId": "ConfigService_GetGuardConfig",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/v1GetDecoratorConfigResponse"
+              "$ref": "#/definitions/v1GetGuardConfigResponse"
             }
           },
           "429": {
@@ -118,11 +118,11 @@
         "parameters": [
           {
             "name": "body",
-            "description": "Request from Backend SDKs for a Decorator Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between environments but are SHARED between Services.",
+            "description": "Request from Backend SDKs for a Guard Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Guard configurations may vary between environments but are SHARED between Services.",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1GetDecoratorConfigRequest"
+              "$ref": "#/definitions/v1GetGuardConfigRequest"
             }
           }
         ],
@@ -253,16 +253,16 @@
         ]
       }
     },
-    "/v1/health/decorator": {
+    "/v1/health/guard": {
       "post": {
-        "summary": "Get Decorator Health",
+        "summary": "Get Guard Health",
         "description": "Used by SDK to allow developers to make decisions about graceful degradation of backend services.",
-        "operationId": "HealthService_QueryDecoratorHealth",
+        "operationId": "HealthService_QueryGuardHealth",
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/v1QueryDecoratorHealthResponse"
+              "$ref": "#/definitions/v1QueryGuardHealthResponse"
             }
           },
           "429": {
@@ -293,11 +293,11 @@
         "parameters": [
           {
             "name": "body",
-            "description": "Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.",
+            "description": "Called by SDK to determine whether a Guard is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1QueryDecoratorHealthRequest"
+              "$ref": "#/definitions/v1QueryGuardHealthRequest"
             }
           }
         ],
@@ -346,7 +346,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "Notifies Hub that one or more token leases has been used, i.e. decorator has been exercised.",
+            "description": "Notifies Hub that one or more token leases has been used, i.e. Guard has been exercised.",
             "in": "body",
             "required": true,
             "schema": {
@@ -362,7 +362,7 @@
     "/v1/quota/lease": {
       "post": {
         "summary": "Get Access Token Leases",
-        "description": "Get a set of token leases from Stanza Hub for access to given Decorator (optional Feature name for priority).",
+        "description": "Get a set of token leases from Stanza Hub for access to given Guard (optional Feature name for priority).",
         "operationId": "QuotaService_GetTokenLease",
         "responses": {
           "200": {
@@ -399,7 +399,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "Requests token lease for given decorator at priority of specified feature.",
+            "description": "Requests token lease for given Guard at priority of specified feature.",
             "in": "body",
             "required": true,
             "schema": {
@@ -415,7 +415,7 @@
     "/v1/quota/token": {
       "post": {
         "summary": "Get Access Token",
-        "description": "Get a single token from Stanza Hub for access to given Decorator (optional Feature name for priority).",
+        "description": "Get a single token from Stanza Hub for access to given Guard (optional Feature name for priority).",
         "operationId": "QuotaService_GetToken",
         "responses": {
           "200": {
@@ -452,7 +452,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "Requests token for given decorator at priority of specified feature.",
+            "description": "Requests token for given Guard at priority of specified feature.",
             "in": "body",
             "required": true,
             "schema": {
@@ -505,7 +505,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": "Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Decorator). Used from Ingress decorators. Ensures callers have acquired quota prior to expending resources.",
+            "description": "Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Guard). Used from Ingress Guards. Ensures callers have acquired quota prior to expending resources.",
             "in": "body",
             "required": true,
             "schema": {
@@ -628,105 +628,6 @@
       },
       "description": "BrowserConfig describes the current configuration for one Feature.\nInstead of being simply enabled or disabled, features are enabled for a\nparticular percentage of clients (0% is entirely disabled, 100% is entirely enabled).\nClients are required to self-select a percentile value from 1 to 100 in a way that is random\nand trusted to consider a Feature disabled if it is disabled for the selected percentile.\naction_code_disabled describes what the Browser is expected to do if the Feature is not enabled for\ntheir assigned percentile.\nmessage_disabled may be displayed as a fallback action.\naction_code_enabled describes what the Browser is expected to do if the Feature is enabled for\ntheir assigned percentile. This enabled degraded modes. Can be empty.\nmessage_enabled may be displayed while in degraded mode. Can be empty.\nLikely additional fields will be added here as the Browser SDK behavior set becomes more complex."
     },
-    "v1DecoratorConfig": {
-      "type": "object",
-      "properties": {
-        "validateIngressTokens": {
-          "type": "boolean",
-          "description": "Boolean representing wether to validate contents of the X-Stanza-Token header."
-        },
-        "checkQuota": {
-          "type": "boolean",
-          "description": "Boolean representing whether quota checks are enabled.",
-          "title": "Quota"
-        },
-        "quotaTags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests."
-        }
-      },
-      "description": "DecoratorConfig represents a configuration for a given Stanza SDK instrumented Decorator, which may be used by multiple services!\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point, there will be additional per-decorator configuration, such as deadline overrides, adaptive circuitbreaking configs, etc."
-    },
-    "v1DecoratorFeatureSelector": {
-      "type": "object",
-      "properties": {
-        "environment": {
-          "type": "string"
-        },
-        "decoratorName": {
-          "type": "string"
-        },
-        "featureName": {
-          "type": "string"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/hubv1Tag"
-          }
-        }
-      },
-      "required": [
-        "environment",
-        "decoratorName"
-      ]
-    },
-    "v1DecoratorSelector": {
-      "type": "object",
-      "properties": {
-        "environment": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/hubv1Tag"
-          }
-        }
-      },
-      "required": [
-        "environment",
-        "name"
-      ]
-    },
-    "v1DecoratorServiceSelector": {
-      "type": "object",
-      "properties": {
-        "environment": {
-          "type": "string"
-        },
-        "decoratorName": {
-          "type": "string"
-        },
-        "serviceName": {
-          "type": "string"
-        },
-        "serviceRelease": {
-          "type": "string"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/hubv1Tag"
-          }
-        }
-      },
-      "required": [
-        "environment",
-        "decoratorName",
-        "serviceName",
-        "serviceRelease"
-      ]
-    },
     "v1FeatureConfig": {
       "type": "object",
       "properties": {
@@ -794,7 +695,7 @@
       },
       "description": "The response to Browser SDKs is designed to be cacheable for short periods. It is also designed to be shareable between multiple clients (e.g. in case of SSR or use of CDN etc). May return 304 Not Modified with ETag header and empty payload."
     },
-    "v1GetDecoratorConfigRequest": {
+    "v1GetGuardConfigRequest": {
       "type": "object",
       "properties": {
         "versionSeen": {
@@ -802,13 +703,13 @@
           "description": "Set if the client has seen a previous version of the config. Server will send data only if newer config available."
         },
         "selector": {
-          "$ref": "#/definitions/v1DecoratorServiceSelector",
-          "description": "Information required to select and return the correct DecoratorConfig version."
+          "$ref": "#/definitions/v1GuardServiceSelector",
+          "description": "Information required to select and return the correct GuardConfig version."
         }
       },
-      "description": "Request from Backend SDKs for a Decorator Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between environments but are SHARED between Services."
+      "description": "Request from Backend SDKs for a Guard Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Guard configurations may vary between environments but are SHARED between Services."
     },
-    "v1GetDecoratorConfigResponse": {
+    "v1GetGuardConfigResponse": {
       "type": "object",
       "properties": {
         "version": {
@@ -818,7 +719,7 @@
           "type": "boolean"
         },
         "config": {
-          "$ref": "#/definitions/v1DecoratorConfig"
+          "$ref": "#/definitions/v1GuardConfig"
         }
       },
       "description": "The response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`."
@@ -856,8 +757,8 @@
       "type": "object",
       "properties": {
         "selector": {
-          "$ref": "#/definitions/v1DecoratorFeatureSelector",
-          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time."
+          "$ref": "#/definitions/v1GuardFeatureSelector",
+          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time."
         },
         "clientId": {
           "type": "string",
@@ -874,7 +775,7 @@
           "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. The value set here is the default request weight which should be assumed for leases. If not specified, then the median weight is used when granted leases. Actual weights should be set via the SetTokenLeaseConsumed rpc.\n\ndefault_weight is optional; if not used then it is assumed that all requests have weight of 1."
         }
       },
-      "description": "Requests token lease for given decorator at priority of specified feature.",
+      "description": "Requests token lease for given Guard at priority of specified feature.",
       "required": [
         "selector"
       ]
@@ -902,8 +803,8 @@
       "type": "object",
       "properties": {
         "selector": {
-          "$ref": "#/definitions/v1DecoratorFeatureSelector",
-          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time."
+          "$ref": "#/definitions/v1GuardFeatureSelector",
+          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time."
         },
         "clientId": {
           "type": "string",
@@ -920,7 +821,7 @@
           "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If not specified then a default value of 1 is used. In cases where weights/costs are not known upfront, users can send an initial estimate as the weight, and then later, when the exact cost is known, send an updated weight via the SetTokenLeaseConsumed rpc.\n\nweight is optional; if not used then it is assumed that all requests have weight of 1."
         }
       },
-      "description": "Requests token for given decorator at priority of specified feature.",
+      "description": "Requests token for given Guard at priority of specified feature.",
       "required": [
         "selector"
       ]
@@ -947,10 +848,10 @@
       "type": "object",
       "properties": {
         "selector": {
-          "$ref": "#/definitions/v1DecoratorSelector",
-          "description": "If specified, only stats relating to the tags and features in selector will be returned.\n If only decorator and environment are specified, then stats relating to all tags and features will be returned."
+          "$ref": "#/definitions/v1GuardSelector",
+          "description": "If specified, only stats relating to the tags and features in selector will be returned.\n If only guard and environment are specified, then stats relating to all tags and features will be returned."
         },
-        "decoratorQueryMode": {
+        "guardQueryMode": {
           "$ref": "#/definitions/v1QueryMode"
         },
         "startTs": {
@@ -989,6 +890,14 @@
             "type": "string"
           },
           "description": "Listed tags will be reported (individual timeseries returned for each value)."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          },
+          "description": "Only stats relating to the specified tags will be returned."
         }
       },
       "description": "Usage query.",
@@ -1009,6 +918,105 @@
           }
         }
       }
+    },
+    "v1GuardConfig": {
+      "type": "object",
+      "properties": {
+        "validateIngressTokens": {
+          "type": "boolean",
+          "description": "Boolean representing wether to validate contents of the X-Stanza-Token header."
+        },
+        "checkQuota": {
+          "type": "boolean",
+          "description": "Boolean representing whether quota checks are enabled.",
+          "title": "Quota"
+        },
+        "quotaTags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests."
+        }
+      },
+      "description": "GuardConfig represents a configuration for a given Stanza SDK instrumented Guard, which may be used by multiple services!\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point, there will be additional per-Guard configuration, such as deadline overrides, adaptive circuitbreaking configs, etc."
+    },
+    "v1GuardFeatureSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "guardName": {
+          "type": "string"
+        },
+        "featureName": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "guardName"
+      ]
+    },
+    "v1GuardSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "name"
+      ]
+    },
+    "v1GuardServiceSelector": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "guardName": {
+          "type": "string"
+        },
+        "serviceName": {
+          "type": "string"
+        },
+        "serviceRelease": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          }
+        }
+      },
+      "required": [
+        "environment",
+        "guardName",
+        "serviceName",
+        "serviceRelease"
+      ]
     },
     "v1HeaderTraceConfig": {
       "type": "object",
@@ -1076,12 +1084,12 @@
       },
       "description": "Specifies which request parameters should be sampled."
     },
-    "v1QueryDecoratorHealthRequest": {
+    "v1QueryGuardHealthRequest": {
       "type": "object",
       "properties": {
         "selector": {
-          "$ref": "#/definitions/v1DecoratorFeatureSelector",
-          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.\n\nRequired: decoratorName, featureName, environment"
+          "$ref": "#/definitions/v1GuardFeatureSelector",
+          "description": "Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time.\n\nRequired: GuardName, featureName, environment"
         },
         "priorityBoost": {
           "type": "integer",
@@ -1089,9 +1097,9 @@
           "description": "Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic."
         }
       },
-      "description": "Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds."
+      "description": "Called by SDK to determine whether a Guard is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds."
     },
-    "v1QueryDecoratorHealthResponse": {
+    "v1QueryGuardHealthResponse": {
       "type": "object",
       "properties": {
         "health": {
@@ -1133,7 +1141,7 @@
           "type": "string"
         }
       },
-      "description": "SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types. These rules are \"per service\" (not per Decorator) with Decorator specific routing encoded in the given JSON blobs (as Sentinel \"Resources\")."
+      "description": "SentinelConfig represents Sentinel compliant JSON configuration for the given Sentinel types. These rules are \"per service\" (not per Guard) with Guard specific routing encoded in the given JSON blobs (as Sentinel \"Resources\")."
     },
     "v1ServiceConfig": {
       "type": "object",
@@ -1193,7 +1201,7 @@
           "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not known before request execution, then a default or estimated weight may be used, followed by a corrected value here. If a value is sent here, it should be the actual request weight."
         }
       },
-      "description": "Notifies Hub that one or more token leases has been used, i.e. decorator has been exercised.",
+      "description": "Notifies Hub that one or more token leases has been used, i.e. Guard has been exercised.",
       "required": [
         "tokens"
       ]
@@ -1221,8 +1229,8 @@
         "token": {
           "type": "string"
         },
-        "decorator": {
-          "$ref": "#/definitions/v1DecoratorSelector"
+        "guard": {
+          "$ref": "#/definitions/v1GuardSelector"
         }
       },
       "required": [
@@ -1413,7 +1421,7 @@
           }
         }
       },
-      "description": "Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Decorator). Used from Ingress decorators. Ensures callers have acquired quota prior to expending resources."
+      "description": "Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Guard). Used from Ingress Guards. Ensures callers have acquired quota prior to expending resources."
     },
     "v1ValidateTokenResponse": {
       "type": "object",

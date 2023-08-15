@@ -75,7 +75,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-message DecoratorSelector {
+message GuardSelector {
   string environment = 1 [(google.api.field_behavior) = REQUIRED];
   string name = 2 [(google.api.field_behavior) = REQUIRED];
   repeated Tag tags = 6;
@@ -87,16 +87,16 @@ message FeatureSelector {
   repeated Tag tags = 6;
 }
 
-message DecoratorFeatureSelector {
+message GuardFeatureSelector {
   string environment = 1 [(google.api.field_behavior) = REQUIRED];
-  string decorator_name = 2 [(google.api.field_behavior) = REQUIRED];
+  string guard_name = 2 [(google.api.field_behavior) = REQUIRED];
   optional string feature_name = 3;
   repeated Tag tags = 6;
 }
 
-message DecoratorServiceSelector {
+message GuardServiceSelector {
   string environment = 1 [(google.api.field_behavior) = REQUIRED];
-  string decorator_name = 2 [(google.api.field_behavior) = REQUIRED];
+  string guard_name = 2 [(google.api.field_behavior) = REQUIRED];
   string service_name = 3 [(google.api.field_behavior) = REQUIRED];
   string service_release = 4 [(google.api.field_behavior) = REQUIRED];
   repeated Tag tags = 6;
