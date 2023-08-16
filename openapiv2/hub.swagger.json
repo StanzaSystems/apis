@@ -889,7 +889,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Listed tags will be reported (individual timeseries returned for each value)."
+          "description": "Tags matching listed tag keys will be reported (individual timeseries returned for each value)."
         },
         "tags": {
           "type": "array",
@@ -898,6 +898,10 @@
             "$ref": "#/definitions/hubv1Tag"
           },
           "description": "Only stats relating to the specified tags will be returned."
+        },
+        "reportAllTags": {
+          "type": "boolean",
+          "description": "Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params."
         }
       },
       "description": "Usage query.",
