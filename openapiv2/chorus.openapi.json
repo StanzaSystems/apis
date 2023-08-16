@@ -7,7 +7,8 @@
   },
   "servers": [
     {
-      "url": "https://api.demo.getstanza.io/v1"
+      "url": "https://api.stanzasys.co/v1",
+      "description": "Management"
     }
   ],
   "components": {
@@ -19,7 +20,7 @@
       }
     },
     "schemas": {
-      "DecoratorMetadata": {
+      "GuardMetadata": {
         "type": "object",
         "properties": {
           "traceConfig": {
@@ -119,7 +120,7 @@
             "description": "Default quota limits for child quotas. Each different tag value (unless specified in child_quota_configs)\n  will be assigned a separate instance of this rate limit configuration. This is a good place\n  to specify default per-customer or per-team limits. Map key is the name of the tag, e.g. \"team_id\"."
           }
         },
-        "description": "Describes quota limits for a Decorator. These form a tree of nested quota limits.\nTODO(Laura): link to examples in our docs."
+        "description": "Describes quota limits for a Guard. These form a tree of nested quota limits.\nTODO(Laura): link to examples in our docs.\n\nWARNING\nThis proto is used in the Hub database: breaking changes MUST not be made."
       },
       "RateLimitConfig": {
         "type": "object",
@@ -136,7 +137,8 @@
             "type": "boolean",
             "description": "If this is set to true then requests will be permitted to proceed as long as the parent quota\n  is not saturated. Requests served as best effort will be tracked specifically in Stanza metrics."
           }
-        }
+        },
+        "description": "WARNING\nThis proto is used in the Hub database (via QuotaConfig: breaking changes MUST not be made."
       },
       "TagConfig": {
         "type": "object",
@@ -148,7 +150,8 @@
             "type": "boolean",
             "description": "If tag_optional is not set to true, then all requests which do not have the specified tag\n  will be refused quota. For optional tags, all untagged requests will be assigned to either\n  an instance of the child_default_configs rate limit, or to the specified child_quota_configs\n  (if there is an instance of child_quota_configs with the tag value as empty)."
           }
-        }
+        },
+        "description": "WARNING\nThis proto is used in the Hub database (via QuotaConfig: breaking changes MUST not be made."
       },
       "ServiceMetadata": {
         "type": "object",
@@ -278,7 +281,7 @@
           }
         }
       },
-      "Decorator": {
+      "Guard": {
         "type": "object",
         "properties": {
           "name": {
@@ -294,11 +297,7 @@
           },
           "networkTrafficType": {
             "type": "string",
-            "enum": [
-              "INBOUND",
-              "OUTBOUND",
-              "INTERNAL"
-            ]
+            "enum": ["INBOUND", "OUTBOUND", "INTERNAL"]
           },
           "health": {
             "type": "string",
@@ -379,12 +378,7 @@
             }
           }
         },
-        "required": [
-          "name",
-          "networkTrafficType",
-          "projectId",
-          "environmentId"
-        ]
+        "required": ["name", "networkTrafficType", "projectId", "environmentId"]
       },
       "Feature": {
         "type": "object",
@@ -434,10 +428,7 @@
           },
           "healthUpdater": {
             "type": "string",
-            "enum": [
-              "USER",
-              "AUTOMATION"
-            ]
+            "enum": ["USER", "AUTOMATION"]
           },
           "messageDisabled": {
             "type": "string"
@@ -445,7 +436,7 @@
           "messageEnabled": {
             "type": "string"
           },
-          "decoratorInfos": {
+          "guardInfos": {
             "type": "array",
             "items": {
               "type": "object",
@@ -495,29 +486,25 @@
             }
           }
         },
-        "required": [
-          "name",
-          "priority",
-          "projectId",
-          "environmentId"
-        ]
+        "required": ["name", "priority", "projectId", "environmentId"]
       },
       "Environment": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
-          "isProd": {
-            "type": "boolean"
-          },
           "id": {
             "type": "string"
           },
           "stanzaCustomerId": {
             "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isProd": {
+            "type": "boolean"
           }
-        }
+        },
+        "required": ["name", "isProd"]
       },
       "FeatureAutoUpdateRule": {
         "type": "object",
@@ -540,10 +527,7 @@
           },
           "targetState": {
             "type": "string",
-            "enum": [
-              "STATE_ENABLED",
-              "STATE_DISABLED"
-            ]
+            "enum": ["STATE_ENABLED", "STATE_DISABLED"]
           },
           "targetActionCode": {
             "type": "integer",
@@ -554,12 +538,7 @@
             "nullable": true
           }
         },
-        "required": [
-          "featureId",
-          "health",
-          "enabled",
-          "targetState"
-        ]
+        "required": ["featureId", "health", "enabled", "targetState"]
       },
       "Project": {
         "type": "object",
@@ -582,9 +561,7 @@
             }
           }
         },
-        "required": [
-          "name"
-        ]
+        "required": ["name"]
       },
       "Key": {
         "type": "object",
@@ -603,10 +580,7 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "Browser",
-              "API"
-            ]
+            "enum": ["Browser", "API"]
           },
           "environmentId": {
             "type": "string",
@@ -623,12 +597,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "name",
-          "type",
-          "environmentId",
-          "projectId"
-        ]
+        "required": ["name", "type", "environmentId", "projectId"]
       },
       "Service": {
         "type": "object",
@@ -668,19 +637,15 @@
             "nullable": true
           }
         },
-        "required": [
-          "environmentId",
-          "name",
-          "projectId"
-        ]
+        "required": ["environmentId", "name", "projectId"]
       }
     },
     "parameters": {}
   },
   "paths": {
-    "/decorators/{decoratorId}": {
+    "/guards/{guardId}": {
       "get": {
-        "description": "Get decorator by its id",
+        "description": "Get guard by its id",
         "security": [
           {
             "bearerAuth": []
@@ -693,13 +658,13 @@
               "format": "uuid"
             },
             "required": true,
-            "name": "decoratorId",
+            "name": "guardId",
             "in": "path"
           }
         ],
         "responses": {
           "200": {
-            "description": "Stanza Decorator Object",
+            "description": "Stanza Guard Object",
             "content": {
               "application/json": {
                 "schema": {
@@ -718,11 +683,7 @@
                     },
                     "networkTrafficType": {
                       "type": "string",
-                      "enum": [
-                        "INBOUND",
-                        "OUTBOUND",
-                        "INTERNAL"
-                      ]
+                      "enum": ["INBOUND", "OUTBOUND", "INTERNAL"]
                     },
                     "health": {
                       "type": "string",
@@ -816,7 +777,7 @@
         }
       },
       "put": {
-        "description": "Create decorator",
+        "description": "Create guard",
         "security": [
           {
             "bearerAuth": []
@@ -829,7 +790,7 @@
               "format": "uuid"
             },
             "required": true,
-            "name": "decoratorId",
+            "name": "guardId",
             "in": "path"
           }
         ],
@@ -852,11 +813,7 @@
                   },
                   "networkTrafficType": {
                     "type": "string",
-                    "enum": [
-                      "INBOUND",
-                      "OUTBOUND",
-                      "INTERNAL"
-                    ]
+                    "enum": ["INBOUND", "OUTBOUND", "INTERNAL"]
                   },
                   "health": {
                     "type": "string",
@@ -949,7 +906,7 @@
         },
         "responses": {
           "200": {
-            "description": "Stanza Decorator Object",
+            "description": "Stanza Guard Object",
             "content": {
               "application/json": {
                 "schema": {
@@ -968,11 +925,7 @@
                     },
                     "networkTrafficType": {
                       "type": "string",
-                      "enum": [
-                        "INBOUND",
-                        "OUTBOUND",
-                        "INTERNAL"
-                      ]
+                      "enum": ["INBOUND", "OUTBOUND", "INTERNAL"]
                     },
                     "health": {
                       "type": "string",
@@ -1066,9 +1019,9 @@
         }
       }
     },
-    "/decorators": {
+    "/guards": {
       "post": {
-        "description": "Create decorator",
+        "description": "Create guard",
         "security": [
           {
             "bearerAuth": []
@@ -1093,11 +1046,7 @@
                   },
                   "networkTrafficType": {
                     "type": "string",
-                    "enum": [
-                      "INBOUND",
-                      "OUTBOUND",
-                      "INTERNAL"
-                    ]
+                    "enum": ["INBOUND", "OUTBOUND", "INTERNAL"]
                   },
                   "health": {
                     "type": "string",
@@ -1190,7 +1139,7 @@
         },
         "responses": {
           "200": {
-            "description": "Stanza Decorator Object",
+            "description": "Stanza Guard Object",
             "content": {
               "application/json": {
                 "schema": {
@@ -1209,11 +1158,7 @@
                     },
                     "networkTrafficType": {
                       "type": "string",
-                      "enum": [
-                        "INBOUND",
-                        "OUTBOUND",
-                        "INTERNAL"
-                      ]
+                      "enum": ["INBOUND", "OUTBOUND", "INTERNAL"]
                     },
                     "health": {
                       "type": "string",
