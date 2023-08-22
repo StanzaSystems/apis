@@ -866,9 +866,6 @@
           "type": "string",
           "description": "Query for stats where this specific APIKey was used. If not specified then stats for all APIKeys are returned."
         },
-        "apikeyQueryMode": {
-          "$ref": "#/definitions/v1QueryMode"
-        },
         "feature": {
           "type": "string",
           "description": "Query for stats about a specific feature. If not specified then stats for all features are returned."
@@ -1394,12 +1391,9 @@
             "$ref": "#/definitions/v1UsageTSDataPoint"
           }
         },
-        "apikey": {
+        "feature": {
           "type": "string",
           "title": "Axes for this timeseries - may not be applicable if there are no axes being queried in report mode"
-        },
-        "feature": {
-          "type": "string"
         },
         "priority": {
           "type": "integer",
@@ -1411,6 +1405,9 @@
             "type": "object",
             "$ref": "#/definitions/hubv1Tag"
           }
+        },
+        "guard": {
+          "type": "string"
         }
       }
     },

@@ -31,17 +31,16 @@ message GetUsageRequest {
   google.protobuf.Timestamp end_ts = 4 [(google.api.field_behavior) = REQUIRED];
 
   optional string apikey = 5; // Query for stats where this specific APIKey was used. If not specified then stats for all APIKeys are returned.
-  optional QueryMode apikey_query_mode = 6;
 
-  optional string feature = 7; // Query for stats about a specific feature. If not specified then stats for all features are returned.
-  optional QueryMode feature_query_mode = 8;
+  optional string feature = 6; // Query for stats about a specific feature. If not specified then stats for all features are returned.
+  optional QueryMode feature_query_mode = 7;
 
-  optional int32 priority = 9; // Query for stats about a specific priority level. If not specified then stats for all priorities are returned.
-  optional QueryMode priority_query_mode = 10;
+  optional int32 priority = 8; // Query for stats about a specific priority level. If not specified then stats for all priorities are returned.
+  optional QueryMode priority_query_mode = 9;
 
-  repeated string report_tags = 11; // Tags matching listed tag keys will be reported (individual timeseries returned for each value).
-  repeated Tag tags = 12; // Only stats relating to the specified tags will be returned.
-  optional bool report_all_tags = 13; // Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params.
+  repeated string report_tags = 10; // Tags matching listed tag keys will be reported (individual timeseries returned for each value).
+  repeated Tag tags = 11; // Only stats relating to the specified tags will be returned.
+  optional bool report_all_tags = 12; // Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params.
 }
 
 message GetUsageResponse {
@@ -51,10 +50,10 @@ message GetUsageResponse {
 message UsageTimeseries {
   repeated UsageTSDataPoint data = 1;
   // Axes for this timeseries - may not be applicable if there are no axes being queried in report mode
-  optional string apikey = 2;
   optional string feature = 3;
   optional int32 priority = 4;
   repeated Tag tags = 5;
+  optional string guard = 6;
 }
 
 message UsageTSDataPoint {
