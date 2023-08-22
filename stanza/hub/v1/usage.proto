@@ -24,23 +24,24 @@ service UsageService {
 message GetUsageRequest {
   // If specified, only stats relating to the tags and features in selector will be returned.
   //  If only guard and environment are specified, then stats relating to all tags and features will be returned.
-  GuardSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
+  string environment = 1 [(google.api.field_behavior) = REQUIRED];
+  optional string guard = 2; // Query for stats for this specific guard. If not specified then stats for all guards are returned.
 
-  optional QueryMode guard_query_mode = 2;
-  google.protobuf.Timestamp start_ts = 3 [(google.api.field_behavior) = REQUIRED];
-  google.protobuf.Timestamp end_ts = 4 [(google.api.field_behavior) = REQUIRED];
+  optional QueryMode guard_query_mode = 3;
+  google.protobuf.Timestamp start_ts = 4 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.Timestamp end_ts = 5 [(google.api.field_behavior) = REQUIRED];
 
-  optional string apikey = 5; // Query for stats where this specific APIKey was used. If not specified then stats for all APIKeys are returned.
+  optional string apikey = 6; // Query for stats where this specific APIKey was used. If not specified then stats for all APIKeys are returned.
 
-  optional string feature = 6; // Query for stats about a specific feature. If not specified then stats for all features are returned.
-  optional QueryMode feature_query_mode = 7;
+  optional string feature = 7; // Query for stats about a specific feature. If not specified then stats for all features are returned.
+  optional QueryMode feature_query_mode = 8;
 
-  optional int32 priority = 8; // Query for stats about a specific priority level. If not specified then stats for all priorities are returned.
-  optional QueryMode priority_query_mode = 9;
+  optional int32 priority = 9; // Query for stats about a specific priority level. If not specified then stats for all priorities are returned.
+  optional QueryMode priority_query_mode = 10;
 
-  repeated string report_tags = 10; // Tags matching listed tag keys will be reported (individual timeseries returned for each value).
-  repeated Tag tags = 11; // Only stats relating to the specified tags will be returned.
-  optional bool report_all_tags = 12; // Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params.
+  repeated string report_tags = 11; // Tags matching listed tag keys will be reported (individual timeseries returned for each value).
+  repeated Tag tags = 12; // Only stats relating to the specified tags will be returned.
+  optional bool report_all_tags = 13; // Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params.
 }
 
 message GetUsageResponse {

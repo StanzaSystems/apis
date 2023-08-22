@@ -847,9 +847,13 @@
     "v1GetUsageRequest": {
       "type": "object",
       "properties": {
-        "selector": {
-          "$ref": "#/definitions/v1GuardSelector",
+        "environment": {
+          "type": "string",
           "description": "If specified, only stats relating to the tags and features in selector will be returned.\n If only guard and environment are specified, then stats relating to all tags and features will be returned."
+        },
+        "guard": {
+          "type": "string",
+          "description": "Query for stats for this specific guard. If not specified then stats for all guards are returned."
         },
         "guardQueryMode": {
           "$ref": "#/definitions/v1QueryMode"
@@ -903,7 +907,7 @@
       },
       "description": "Usage query.",
       "required": [
-        "selector",
+        "environment",
         "startTs",
         "endTs"
       ]
