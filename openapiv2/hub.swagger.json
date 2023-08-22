@@ -847,9 +847,13 @@
     "v1GetUsageRequest": {
       "type": "object",
       "properties": {
-        "selector": {
-          "$ref": "#/definitions/v1GuardSelector",
+        "environment": {
+          "type": "string",
           "description": "If specified, only stats relating to the tags and features in selector will be returned.\n If only guard and environment are specified, then stats relating to all tags and features will be returned."
+        },
+        "guard": {
+          "type": "string",
+          "description": "Query for stats for this specific guard. If not specified then stats for all guards are returned."
         },
         "guardQueryMode": {
           "$ref": "#/definitions/v1QueryMode"
@@ -865,9 +869,6 @@
         "apikey": {
           "type": "string",
           "description": "Query for stats where this specific APIKey was used. If not specified then stats for all APIKeys are returned."
-        },
-        "apikeyQueryMode": {
-          "$ref": "#/definitions/v1QueryMode"
         },
         "feature": {
           "type": "string",
@@ -906,7 +907,7 @@
       },
       "description": "Usage query.",
       "required": [
-        "selector",
+        "environment",
         "startTs",
         "endTs"
       ]
@@ -1394,12 +1395,9 @@
             "$ref": "#/definitions/v1UsageTSDataPoint"
           }
         },
-        "apikey": {
+        "feature": {
           "type": "string",
           "title": "Axes for this timeseries - may not be applicable if there are no axes being queried in report mode"
-        },
-        "feature": {
-          "type": "string"
         },
         "priority": {
           "type": "integer",
@@ -1411,6 +1409,9 @@
             "type": "object",
             "$ref": "#/definitions/hubv1Tag"
           }
+        },
+        "guard": {
+          "type": "string"
         }
       }
     },
