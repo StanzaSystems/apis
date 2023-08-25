@@ -903,6 +903,10 @@
         "reportAllTags": {
           "type": "boolean",
           "description": "Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params."
+        },
+        "step": {
+          "type": "string",
+          "description": "1m to 1w - m is minutes; h hours; d days; w weeks (7d). Defaults to a step that results in \u003c100 results. Minimum step 1m."
         }
       },
       "description": "Usage query.",
