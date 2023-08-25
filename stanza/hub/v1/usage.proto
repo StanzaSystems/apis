@@ -42,6 +42,8 @@ message GetUsageRequest {
   repeated string report_tags = 11; // Tags matching listed tag keys will be reported (individual timeseries returned for each value).
   repeated Tag tags = 12; // Only stats relating to the specified tags will be returned.
   optional bool report_all_tags = 13; // Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params.
+
+  optional string step = 14; // 1m to 1w - m is minutes; h hours; d days; w weeks (7d). Defaults to a step that results in <100 results. Minimum step 1m.
 }
 
 message GetUsageResponse {
