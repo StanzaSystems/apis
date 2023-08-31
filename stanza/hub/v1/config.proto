@@ -188,6 +188,10 @@ message GetServiceConfigRequest {
 
   // Information required to select and return the most recent ServiceConfig version
   ServiceSelector service = 2;
+
+  // This is the same stable client_id that is used when requesting quota via GetTokenRequest/GetTokenLeaseRequest endpoints.
+  // If supplied, it permits Stanza to provide per-service telemetry and report on service<>guard and service<>feature relationships.
+  optional string client_id = 3;
 }
 
 // The response to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`.

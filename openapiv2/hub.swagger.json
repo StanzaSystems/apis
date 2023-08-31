@@ -734,6 +734,10 @@
         "service": {
           "$ref": "#/definitions/v1ServiceSelector",
           "title": "Information required to select and return the most recent ServiceConfig version"
+        },
+        "clientId": {
+          "type": "string",
+          "description": "This is the same stable client_id that is used when requesting quota via GetTokenRequest/GetTokenLeaseRequest endpoints.\nIf supplied, it permits Stanza to provide per-service telemetry and report on service\u003c\u003eguard and service\u003c\u003efeature relationships."
         }
       },
       "description": "The request from Backend SDKs for a Service Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed."
