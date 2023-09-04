@@ -766,7 +766,7 @@
         },
         "clientId": {
           "type": "string",
-          "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID."
+          "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.\nIt is important that this value be stable over the lifetime of an instance: if it changes, then Stanza will not be able to efficiently assign batches of tokens."
         },
         "priorityBoost": {
           "type": "integer",
@@ -812,7 +812,7 @@
         },
         "clientId": {
           "type": "string",
-          "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID."
+          "description": "Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.\nIt is important that this value be stable over the lifetime of an instance: if it changes, then Stanza will not be able to efficiently assign batches of tokens."
         },
         "priorityBoost": {
           "type": "integer",
