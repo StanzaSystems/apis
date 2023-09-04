@@ -64,6 +64,7 @@ message UsageTimeseries {
   optional int32 priority = 4;
   repeated Tag tags = 5;
   optional string guard = 6;
+  optional string service = 7;
 }
 
 message UsageTSDataPoint {

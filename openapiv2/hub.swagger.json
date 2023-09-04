@@ -1427,6 +1427,9 @@
         },
         "guard": {
           "type": "string"
+        },
+        "service": {
+          "type": "string"
         }
       }
     },
