@@ -881,6 +881,13 @@
         "featureQueryMode": {
           "$ref": "#/definitions/v1QueryMode"
         },
+        "service": {
+          "type": "string",
+          "description": "Query for stats about a specific service. If not specified then stats for all services are returned.\nNote that Stanza can only track service statistics if client_id is used when requesting service configuration at startup, and sent with quota requests."
+        },
+        "serviceQueryMode": {
+          "$ref": "#/definitions/v1QueryMode"
+        },
         "priority": {
           "type": "integer",
           "format": "int32",
