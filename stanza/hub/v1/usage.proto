@@ -36,6 +36,11 @@ message GetUsageRequest {
   optional string feature = 7; // Query for stats about a specific feature. If not specified then stats for all features are returned.
   optional QueryMode feature_query_mode = 8;
 
+  // Query for stats about a specific service. If not specified then stats for all services are returned.
+  // Note that Stanza can only track service statistics if client_id is used when requesting service configuration at startup, and sent with quota requests.
+  optional string service = 15;
+  optional QueryMode service_query_mode = 16;
+
   optional int32 priority = 9; // Query for stats about a specific priority level. If not specified then stats for all priorities are returned.
   optional QueryMode priority_query_mode = 10;
 
@@ -44,6 +49,8 @@ message GetUsageRequest {
   optional bool report_all_tags = 13; // Report all tag values for all tags as separate timeseries. Overrides tags and report_tags params.
 
   optional string step = 14; // 1m to 1w - m is minutes; h hours; d days; w weeks (7d). Defaults to a step that results in <100 results. Minimum step 1m.
+
+  // next free: 17
 }
 
 message GetUsageResponse {
