@@ -104,6 +104,7 @@ message GetTokenRequest {
   // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time.
   GuardFeatureSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
   // Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.
+  // It is important that this value be stable over the lifetime of an instance: if it changes, then Stanza will not be able to efficiently assign batches of tokens. 
   optional string client_id = 4;
   // Used to increase or decrease priority of request, relative to normal feature priority.
   optional int32 priority_boost = 5;
@@ -125,6 +126,7 @@ message GetTokenLeaseRequest {
   // Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time.
   GuardFeatureSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
   // Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.
+  // It is important that this value be stable over the lifetime of an instance: if it changes, then Stanza will not be able to efficiently assign batches of tokens. 
   optional string client_id = 4;
   // Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
   optional int32 priority_boost = 5;
