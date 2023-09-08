@@ -147,7 +147,7 @@ message Tag {
 enum Reason {
   REASON_UNSPECIFIED = 0;
 
-  // Reasons returned by Stanza control plane -  SDK implementers do not need to label metrics with these reasons.
+  // Reasons returned by Stanza control plane -  SDK implementers do not need to label metrics with these reasons (do not add any reason label).
   REASON_SUFFICIENT_QUOTA = 1; // Sufficient standard quota exists to serve the request.
   REASON_INSUFFICIENT_QUOTA = 2; // Insufficient standard quota exists to serve the request without affecting higher-priority traffic.
   REASON_INSUFFICIENT_QUOTA_PARENT = 3; // Hierarchical quota - a child quota has sufficient quota but its parent does not.
