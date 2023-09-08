@@ -841,6 +841,9 @@
         },
         "reason": {
           "$ref": "#/definitions/v1Reason"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1Mode"
         }
       },
       "description": "Specifies whether token granted.",
@@ -1083,6 +1086,14 @@
         }
       }
     },
+    "v1Mode": {
+      "type": "string",
+      "enum": [
+        "MODE_NORMAL",
+        "MODE_REPORT_ONLY"
+      ],
+      "description": "This type describes what mode a Guard or Service is operating under.\n\n - MODE_NORMAL: Normal operations - Stanza may shed requests according to its configuration. SDK implementers should label metrics: mode=\"normal\"\n - MODE_REPORT_ONLY: Report-only mode - Stanza never sheds requests, but does perform all processing and records metrics about the actions that would be taken if in normal mode. SDK implementers should label metrics: mode=\"report-only\""
+    },
     "v1ParamTraceConfig": {
       "type": "object",
       "properties": {
@@ -1142,8 +1153,14 @@
         "REASON_INSUFFICIENT_QUOTA",
         "REASON_INSUFFICIENT_QUOTA_PARENT",
         "REASON_BURST",
-        "REASON_BEST_EFFORT"
-      ]
+        "REASON_BEST_EFFORT",
+        "REASON_QUOTA_CHECK_DISABLED",
+        "REASON_QUOTA_UNKNOWN",
+        "REASON_FAIL_OPEN",
+        "REASON_INVALID_TOKEN",
+        "REASON_SENTINEL"
+      ],
+      "description": " - REASON_SUFFICIENT_QUOTA: Reasons returned by Stanza control plane -  SDK implementers do not need to label metrics with these reasons.\n\nSufficient standard quota exists to serve the request.\n - REASON_INSUFFICIENT_QUOTA: Insufficient standard quota exists to serve the request without affecting higher-priority traffic.\n - REASON_INSUFFICIENT_QUOTA_PARENT: Hierarchical quota - a child quota has sufficient quota but its parent does not.\n - REASON_BURST: Insufficient standard quota exists to serve the request but there is sufficient burst quota.\n - REASON_BEST_EFFORT: Hierarchical quota - a child quota has insufficient quota to serve the request, but it is permitted to exceed as parent quota is not fully used.\n - REASON_QUOTA_CHECK_DISABLED: The guard has been configured not to check quota.\n - REASON_QUOTA_UNKNOWN: The referenced quota configuration cannot be found.\n - REASON_FAIL_OPEN: Reasons assigned by Stanza SDKs - SDK implementers should label metrics accordingly.\n\nSDK has failed-open because it cannot connect to Stanza. SDK implementers should label metrics: reason=\"fail-open\"\n - REASON_INVALID_TOKEN: SDK attempted to validate token, which was rejected by Stanza. SDK implementers should label metrics: reason=\"invalid-token\"\n - REASON_SENTINEL: SDK rejected request because of Sentinel rules. SDK implementers should label metrics: reason=\"sentinel\""
     },
     "v1SentinelConfig": {
       "type": "object",
@@ -1286,6 +1303,9 @@
           "type": "string",
           "format": "date-time",
           "title": "If nil expiration should be calculated as time you received the lease + duration_msec"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1Mode"
         }
       }
     },

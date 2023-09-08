@@ -137,3 +137,44 @@ message Tag {
   string key = 1;
   string value = 2;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Reasons, Modes, and Decision Types
+//
+///////////////////////////////////////////////////////////////////////////////
+
+enum Reason {
+  REASON_UNSPECIFIED = 0;
+
+  // Reasons returned by Stanza control plane -  SDK implementers do not need to label metrics with these reasons.
+  REASON_SUFFICIENT_QUOTA = 1; // Sufficient standard quota exists to serve the request.
+  REASON_INSUFFICIENT_QUOTA = 2; // Insufficient standard quota exists to serve the request without affecting higher-priority traffic.
+  REASON_INSUFFICIENT_QUOTA_PARENT = 3; // Hierarchical quota - a child quota has sufficient quota but its parent does not.
+  REASON_BURST = 4; // Insufficient standard quota exists to serve the request but there is sufficient burst quota.
+  REASON_BEST_EFFORT = 5; // Hierarchical quota - a child quota has insufficient quota to serve the request, but it is permitted to exceed as parent quota is not fully used.
+  REASON_QUOTA_CHECK_DISABLED = 6; // The guard has been configured not to check quota.
+  REASON_QUOTA_UNKNOWN = 7; // The referenced quota configuration cannot be found.
+  // next control plane reason: 8
+
+  // Reasons assigned by Stanza SDKs - SDK implementers should label metrics accordingly.
+  REASON_FAIL_OPEN = 20; // SDK has failed-open because it cannot connect to Stanza. SDK implementers should label metrics: reason="fail-open"
+  REASON_INVALID_TOKEN = 21; // SDK attempted to validate token, which was rejected by Stanza. SDK implementers should label metrics: reason="invalid-token"
+  REASON_SENTINEL = 22; // SDK rejected request because of Sentinel rules. SDK implementers should label metrics: reason="sentinel"
+  // next SDK reason: 8
+}
+
+// This type describes what mode a Guard or Service is operating under.
+enum Mode {
+  MODE_UNSPECIFIED = 0;
+  MODE_NORMAL = 1; // Normal operations - Stanza may shed requests according to its configuration. SDK implementers should label metrics: mode="normal"
+  MODE_REPORT_ONLY = 2; // Report-only mode - Stanza never sheds requests, but does perform all processing and records metrics about the actions that would be taken if in normal mode. SDK implementers should label metrics: mode="report-only"
+}
+
+// This type describes where decisions about whether specific requests should proceed are made.
+// The purpose of tracking these is to provide coherent application metrics for Stanza users.
+enum DecisionType {
+  DECISION_TYPE_UNSPECIFIED = 0;
+  DECISION_TYPE_LOCAL = 1; // Decisions made within SDK, without Stanza control-plane involvement. SDK implementers should label metrics: decision_type="local"
+  DECISION_TYPE_REMOTE = 2; // Decisions by Stanza control-plane. SDK implementers should label metrics: decision_type="remote"
+}
