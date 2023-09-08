@@ -157,24 +157,28 @@ enum Reason {
   REASON_QUOTA_UNKNOWN = 7; // The referenced quota configuration cannot be found.
   // next control plane reason: 8
 
-  // Reasons assigned by Stanza SDKs - SDK implementers should label metrics accordingly.
-  REASON_FAIL_OPEN = 20; // SDK has failed-open because it cannot connect to Stanza. SDK implementers should label metrics: reason="fail-open"
-  REASON_INVALID_TOKEN = 21; // SDK attempted to validate token, which was rejected by Stanza. SDK implementers should label metrics: reason="invalid-token"
-  REASON_SENTINEL = 22; // SDK rejected request because of Sentinel rules. SDK implementers should label metrics: reason="sentinel"
-  // next SDK reason: 8
+  // Reasons assigned by Stanza SDKs - SDK implementers must abel metrics accordingly.
+  REASON_FAIL_OPEN = 20; // SDK has failed-open because it cannot connect to Stanza. SDK implementers must label metrics: reason="fail_open"
+  REASON_INVALID_TOKEN = 21; // SDK attempted to validate token, which was rejected by Stanza. SDK implementers must abel metrics: reason="invalid_token"
+  REASON_CIRCUIT_BREAKING = 22; // SDK rejected request because of circuit breaking rules. SDK implementers must label metrics: reason="circuit_breaking"
+  REASON_BULKHEAD = 23; // SDK rejected request because of bulkhead rules. SDK implementers must label metrics: reason="bulkhead"
+  REASON_THROTTLING = 24; // SDK rejected request because of throttling rules. SDK implementers must label metrics: reason="throttling"
+  REASON_SYSTEM_ADAPTIVE = 25; // SDK rejected request because of system load rules. SDK implementers must label metrics: reason="system_adaptive"
+
+  // next SDK reason: 26
 }
 
 // This type describes what mode a Guard or Service is operating under.
 enum Mode {
   MODE_UNSPECIFIED = 0;
-  MODE_NORMAL = 1; // Normal operations - Stanza may shed requests according to its configuration. SDK implementers should label metrics: mode="normal"
-  MODE_REPORT_ONLY = 2; // Report-only mode - Stanza never sheds requests, but does perform all processing and records metrics about the actions that would be taken if in normal mode. SDK implementers should label metrics: mode="report-only"
+  MODE_NORMAL = 1; // Normal operations - Stanza may shed requests according to its configuration. SDK implementers must label metrics: mode="normal"
+  MODE_REPORT_ONLY = 2; // Report-only mode - Stanza never sheds requests, but does perform all processing and records metrics about the actions that would be taken if in normal mode. SDK implementers must label metrics: mode="report_only"
 }
 
 // This type describes where decisions about whether specific requests should proceed are made.
 // The purpose of tracking these is to provide coherent application metrics for Stanza users.
 enum DecisionType {
   DECISION_TYPE_UNSPECIFIED = 0;
-  DECISION_TYPE_LOCAL = 1; // Decisions made within SDK, without Stanza control-plane involvement. SDK implementers should label metrics: decision_type="local"
-  DECISION_TYPE_REMOTE = 2; // Decisions by Stanza control-plane. SDK implementers should label metrics: decision_type="remote"
+  DECISION_TYPE_LOCAL = 1; // Decisions made within SDK, without Stanza control-plane involvement. SDK implementers must label metrics: decision_type="local"
+  DECISION_TYPE_REMOTE = 2; // Decisions by Stanza control-plane. SDK implementers must label metrics: decision_type="remote"
 }
