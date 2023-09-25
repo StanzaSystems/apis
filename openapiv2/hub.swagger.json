@@ -73,6 +73,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "environment",
+            "description": "Must be specified.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "AuthService"
         ]
@@ -1219,6 +1228,10 @@
           "type": "number",
           "format": "float",
           "description": "Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not known before request execution, then a default or estimated weight may be used, followed by a corrected value here. If a value is sent here, it should be the actual request weight."
+        },
+        "environment": {
+          "type": "string",
+          "description": "Must be specified."
         }
       },
       "description": "Notifies Hub that one or more token leases has been used, i.e. Guard has been exercised.",

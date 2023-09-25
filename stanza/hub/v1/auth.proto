@@ -33,7 +33,9 @@ service AuthService {
 }
 
 // GetBearerTokenRequest is empty, please pass your API key via a X-Stanza-Key header.
-message GetBearerTokenRequest {}
+message GetBearerTokenRequest {
+  string environment = 1; // Must be specified.
+}
 
 // GetBearerTokenResponse is a new Bearer Token.
 message GetBearerTokenResponse {

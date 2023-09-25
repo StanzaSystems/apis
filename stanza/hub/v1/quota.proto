@@ -157,6 +157,7 @@ message SetTokenLeaseConsumedRequest {
   repeated string tokens = 1 [(google.api.field_behavior) = REQUIRED];
   // Used for request weighting, i.e. accounting for varying request sizes and costs. If weights are not known before request execution, then a default or estimated weight may be used, followed by a corrected value here. If a value is sent here, it should be the actual request weight.
   optional float weight_correction = 2;
+  string environment = 3; // Must be specified.
 }
 
 // No message contents yet
