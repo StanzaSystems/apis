@@ -148,11 +148,11 @@ enum Reason {
   REASON_UNSPECIFIED = 0;
 
   // Reasons returned by Stanza control plane - SDK implementers should label metrics accordingly.
-  REASON_SUFFICIENT_QUOTA = 1; // Sufficient standard quota exists to serve the request. SDK implementers should label metrics: reason="sufficient_quota"
-  REASON_INSUFFICIENT_QUOTA = 2; // Insufficient standard quota exists to serve the request without affecting higher-priority traffic. SDK implementers should label metrics: reason="insufficient_quota"
-  REASON_INSUFFICIENT_QUOTA_PARENT = 3; // Hierarchical quota - a child quota has sufficient quota but its parent does not. SDK implementers should label metrics: reason="insufficient_parent"
-  REASON_BURST = 4; // Insufficient standard quota exists to serve the request but there is sufficient burst quota. SDK implementers should label metrics: reason="burst"
-  REASON_BEST_EFFORT = 5; // Hierarchical quota - a child quota has insufficient quota to serve the request, but it is permitted to exceed as parent quota is not fully used. SDK implementers should label metrics: reason="best_effort"
+  REASON_QUOTA_SUFFICIENT= 1; // Sufficient standard quota exists to serve the request. SDK implementers should label metrics: reason="sufficient_quota"
+  REASON_QUOTA_INSUFFICIENT = 2; // Insufficient standard quota exists to serve the request without affecting higher-priority traffic. SDK implementers should label metrics: reason="insufficient_quota"
+  REASON_QUOTA_INSUFFICIENT_PARENT = 3; // Hierarchical quota - a child quota has sufficient quota but its parent does not. SDK implementers should label metrics: reason="insufficient_parent"
+  REASON_QUOTA_BURST = 4; // Insufficient standard quota exists to serve the request but there is sufficient burst quota. SDK implementers should label metrics: reason="burst"
+  REASON_QUOTA_BEST_EFFORT = 5; // Hierarchical quota - a child quota has insufficient quota to serve the request, but it is permitted to exceed as parent quota is not fully used. SDK implementers should label metrics: reason="best_effort"
   REASON_QUOTA_CHECK_DISABLED = 6; // The guard has been configured not to check quota. SDK implementers should label metrics: reason="check_disabled"
   REASON_QUOTA_UNKNOWN = 7; // The referenced quota configuration cannot be found. SDK implementers should label metrics: reason="quota_unknown"
   // next control plane reason: 8
