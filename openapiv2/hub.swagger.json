@@ -23,6 +23,9 @@
       "name": "QuotaService"
     },
     {
+      "name": "StreamBalancerService"
+    },
+    {
       "name": "UsageService"
     }
   ],
@@ -524,6 +527,50 @@
         ],
         "tags": [
           "QuotaService"
+        ]
+      }
+    },
+    "/v1/updatestreams": {
+      "post": {
+        "operationId": "StreamBalancerService_UpdateStreams",
+        "responses": {
+          "429": {
+            "description": "Too Many Requests, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable, try again after Retry-After.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateStreamsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StreamBalancerService"
         ]
       }
     },
@@ -1256,6 +1303,50 @@
         }
       }
     },
+    "v1StreamRequest": {
+      "type": "object",
+      "properties": {
+        "selector": {
+          "$ref": "#/definitions/v1GuardFeatureSelector"
+        },
+        "priorityBoost": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Used to increase or decrease priority of request, relative to normal feature priority. \nFor instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic."
+        },
+        "streamId": {
+          "type": "string",
+          "description": "Unique identifier for this stream - may be meaningful or a UUID."
+        },
+        "maxWeight": {
+          "type": "number",
+          "format": "float",
+          "title": "Maximum weight that may be allocated to this stream"
+        },
+        "minWeight": {
+          "type": "number",
+          "format": "float",
+          "description": "Minimum weight that may be allocated to this stream. If this weight cannot be allocated then the stream cannot be served."
+        }
+      },
+      "required": [
+        "selector"
+      ]
+    },
+    "v1StreamResult": {
+      "type": "object",
+      "properties": {
+        "streamId": {
+          "type": "string",
+          "description": "Unique identifier for this stream - may be meaningful or a UUID."
+        },
+        "allocatedWeight": {
+          "type": "number",
+          "format": "float",
+          "description": "Weight allocated to this stream. Zero means it was not allocated."
+        }
+      }
+    },
     "v1TokenInfo": {
       "type": "object",
       "properties": {
@@ -1367,6 +1458,30 @@
         }
       },
       "description": "This configuration allows different sample rates to be applied to selected spans."
+    },
+    "v1UpdateStreamsRequest": {
+      "type": "object",
+      "properties": {
+        "requests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1StreamRequest"
+          }
+        }
+      }
+    },
+    "v1UpdateStreamsResponse": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1StreamResult"
+          }
+        }
+      }
     },
     "v1UsageTSDataPoint": {
       "type": "object",
