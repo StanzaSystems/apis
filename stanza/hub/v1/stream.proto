@@ -30,12 +30,12 @@ message UpdateStreamsResponse {
 message StreamRequest {
   GuardFeatureSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
 
-  // Used to increase or decrease priority of request, relative to normal feature priority. 
+  // Used to increase or decrease priority of request, relative to normal feature priority.
   // For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
   optional int32 priority_boost = 2;
 
   // Unique identifier for this stream - may be meaningful or a UUID.
-  string stream_id = 3; 
+  string stream_id = 3;
 
   // Maximum weight that may be allocated to this stream
   float max_weight = 4;
@@ -46,7 +46,7 @@ message StreamRequest {
 
 message StreamResult {
   // Unique identifier for this stream - may be meaningful or a UUID.
-  string stream_id = 1; 
+  string stream_id = 1;
 
   // Weight allocated to this stream. Zero means it was not allocated.
   float allocated_weight = 2;
