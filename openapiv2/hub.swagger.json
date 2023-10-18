@@ -1465,6 +1465,13 @@
             "type": "object",
             "$ref": "#/definitions/v1StreamRequest"
           }
+        },
+        "ended": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "IDs of streams that have completed"
         }
       },
       "required": [
