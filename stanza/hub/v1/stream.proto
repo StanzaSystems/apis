@@ -22,7 +22,7 @@ service StreamBalancerService {
 message UpdateStreamsRequest {
   string guard_name = 1 [(google.api.field_behavior) = REQUIRED];
   string environment = 2 [(google.api.field_behavior) = REQUIRED];
-  
+
   repeated StreamRequest requests = 3;
   repeated string ended = 4; // IDs of streams that have completed
 }
@@ -34,8 +34,8 @@ message UpdateStreamsResponse {
 message StreamRequest {
   // Used to increase or decrease priority of request, relative to normal feature priority.
   // For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
-  
-  string feature = 1;   // optional
+
+  string feature = 1; // optional
 
   repeated Tag tags = 2; // optional
 
