@@ -20,9 +20,11 @@ service StreamBalancerService {
 }
 
 message UpdateStreamsRequest {
-  GuardFeatureSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
-  repeated StreamRequest requests = 2;
-  repeated string ended = 3; // IDs of streams that have completed
+  string guard_name = 1 [(google.api.field_behavior) = REQUIRED];
+  string environment = 2 [(google.api.field_behavior) = REQUIRED];
+
+  repeated StreamRequest requests = 3;
+  repeated string ended = 4; // IDs of streams that have completed
 }
 
 message UpdateStreamsResponse {
@@ -32,21 +34,26 @@ message UpdateStreamsResponse {
 message StreamRequest {
   // Used to increase or decrease priority of request, relative to normal feature priority.
   // For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
-  optional int32 priority_boost = 1;
+
+  string feature = 1; // optional
+
+  repeated Tag tags = 2; // optional
+
+  optional int32 priority_boost = 3; // optional
 
   // Unique identifier for this stream - may be meaningful or a UUID.
-  string stream_id = 2;
+  string stream_id = 4 [(google.api.field_behavior) = REQUIRED];
 
   // Maximum weight that may be allocated to this stream
-  float max_weight = 3;
+  float max_weight = 5 [(google.api.field_behavior) = REQUIRED];
 
   // Minimum weight that may be allocated to this stream. If this weight cannot be allocated then the stream cannot be served.
-  float min_weight = 4;
+  float min_weight = 6 [(google.api.field_behavior) = REQUIRED];
 }
 
 message StreamResult {
   // Unique identifier for this stream - may be meaningful or a UUID.
-  string stream_id = 1;
+  string stream_id = 1 [(google.api.field_behavior) = REQUIRED];
 
   // Weight allocated to this stream. Zero means it was not allocated.
   float allocated_weight = 2;

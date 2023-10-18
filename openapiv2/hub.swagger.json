@@ -1306,10 +1306,22 @@
     "v1StreamRequest": {
       "type": "object",
       "properties": {
+        "feature": {
+          "type": "string",
+          "title": "optional"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/hubv1Tag"
+          },
+          "title": "optional"
+        },
         "priorityBoost": {
           "type": "integer",
           "format": "int32",
-          "description": "Used to increase or decrease priority of request, relative to normal feature priority.\nFor instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic."
+          "title": "optional"
         },
         "streamId": {
           "type": "string",
@@ -1325,7 +1337,13 @@
           "format": "float",
           "description": "Minimum weight that may be allocated to this stream. If this weight cannot be allocated then the stream cannot be served."
         }
-      }
+      },
+      "description": "Used to increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
+      "required": [
+        "streamId",
+        "maxWeight",
+        "minWeight"
+      ]
     },
     "v1StreamResult": {
       "type": "object",
@@ -1339,7 +1357,10 @@
           "format": "float",
           "description": "Weight allocated to this stream. Zero means it was not allocated."
         }
-      }
+      },
+      "required": [
+        "streamId"
+      ]
     },
     "v1TokenInfo": {
       "type": "object",
@@ -1456,8 +1477,11 @@
     "v1UpdateStreamsRequest": {
       "type": "object",
       "properties": {
-        "selector": {
-          "$ref": "#/definitions/v1GuardFeatureSelector"
+        "guardName": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "string"
         },
         "requests": {
           "type": "array",
@@ -1475,7 +1499,8 @@
         }
       },
       "required": [
-        "selector"
+        "guardName",
+        "environment"
       ]
     },
     "v1UpdateStreamsResponse": {
