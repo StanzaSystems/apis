@@ -22,7 +22,7 @@ service StreamBalancerService {
 message UpdateStreamsRequest {
   GuardFeatureSelector selector = 1 [(google.api.field_behavior) = REQUIRED];
   repeated StreamRequest requests = 2;
-  repeated string ended = 3; // IDs of streams that have completed 
+  repeated string ended = 3; // IDs of streams that have completed
 }
 
 message UpdateStreamsResponse {
