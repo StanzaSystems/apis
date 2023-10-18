@@ -897,6 +897,9 @@
         },
         "reason": {
           "$ref": "#/definitions/v1Reason"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1Mode"
         }
       },
       "description": "Specifies whether token granted.",
@@ -1142,6 +1145,14 @@
           "description": "URL of OTEL metric collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector."
         }
       }
+    },
+    "v1Mode": {
+      "type": "string",
+      "enum": [
+        "MODE_NORMAL",
+        "MODE_REPORT_ONLY"
+      ],
+      "description": "Mode describes what mode the Guard or Service is operating under.\n\n - MODE_NORMAL: Normal, Stanza may shed requests according to its configuration\n - MODE_REPORT_ONLY: Report-only, Stanza never sheds requests, but does perform all processing and records metrics about the actions that would be taken if in normal mode"
     },
     "v1ParamTraceConfig": {
       "type": "object",
@@ -1409,6 +1420,9 @@
           "type": "string",
           "format": "date-time",
           "title": "If nil expiration should be calculated as time you received the lease + duration_msec"
+        },
+        "mode": {
+          "$ref": "#/definitions/v1Mode"
         }
       }
     },

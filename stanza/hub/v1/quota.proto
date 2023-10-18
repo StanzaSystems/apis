@@ -119,6 +119,7 @@ message GetTokenResponse {
   bool granted = 1 [(google.api.field_behavior) = REQUIRED];
   optional string token = 2;
   optional Reason reason = 3;
+  optional Mode mode = 4;
 }
 
 // Requests token lease for given Guard at priority of specified feature.
@@ -150,6 +151,7 @@ message TokenLease {
   float weight = 5;
   Reason reason = 6;
   optional google.protobuf.Timestamp expires_at = 7; // If nil expiration should be calculated as time you received the lease + duration_msec
+  optional Mode mode = 8;
 }
 
 // Notifies Hub that one or more token leases has been used, i.e. Guard has been exercised.
