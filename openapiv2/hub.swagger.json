@@ -1013,6 +1013,10 @@
             "type": "string"
           },
           "description": "The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests."
+        },
+        "reportOnly": {
+          "type": "boolean",
+          "description": "If true the SDK should perform all load management logic and emit statistics, but all requests should proceed.\nThe label mode=\"report_only\" should be set on all metrics sent to Stanza."
         }
       },
       "description": "GuardConfig represents a configuration for a given Stanza SDK instrumented Guard, which may be used by multiple services!\nIf check_quota is false, then no ratelimiting will be performed. All quota requests will succeed and the SDK may short-circuit quota requests, i.e. not call Hub for quota.\nAt a later point, there will be additional per-Guard configuration, such as deadline overrides, adaptive circuitbreaking configs, etc."
