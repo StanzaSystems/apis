@@ -137,3 +137,60 @@ message Tag {
   string key = 1;
   string value = 2;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Reasons and Modes
+//
+///////////////////////////////////////////////////////////////////////////////
+
+// Config describes config state reasons used by Stanza SDKs
+enum Config {
+  CONFIG_UNSPECIFIED = 0;
+  CONFIG_CACHED_OK = 1; // SDK has successfully fetched guard config previously and cached it
+  CONFIG_FETCHED_OK = 2; // SDK has successfully fetched guard config in response to this request
+  CONFIG_NOT_FOUND = 3; // SDK tried to fetch a Guard whose config could not be found
+  CONFIG_FETCH_ERROR = 4; // SDK received an error from the Stanza control plane
+  CONFIG_FETCH_TIMEOUT = 5; // SDK timed out trying to get config from the Stanza control plane
+}
+
+// Local describes Guard reasons used by Stanza SDKs
+enum Local {
+  LOCAL_UNSPECIFIED = 0;
+  LOCAL_NOT_SUPPORTED = 1; // SDK does not support locally evaluated rules
+  LOCAL_NOT_EVAL = 2; // SDK never evaluated (failed before local validation attempted)
+  LOCAL_EVAL_DISABLED = 3; // No locally evaluated rules exist for this guard or it was explicitly disabled
+  LOCAL_ALLOWED = 4; // Abstract “allowed” by all locally evaluated rules
+  LOCAL_BLOCKED = 5; // Abstract “blocked” by any locally evaluated rule
+  LOCAL_ERROR = 6; // SDK experienced some locally-sourced error and could not perform local rule evaluation
+}
+
+// Token describes Guard reasons used by Stanza SDKs
+enum Token {
+  TOKEN_UNSPECIFIED = 0;
+  TOKEN_NOT_EVAL = 1; // SDK never evaluated (failed before token validation attempted)
+  TOKEN_EVAL_DISABLED = 2; // Guard configuration does not include evaluating tokens
+  TOKEN_NOT_VALID = 3; // Stanza control plane checked the token and responded that it was not valid
+  TOKEN_VALID = 4; // Stanza control plane checked the token and responded that it was valid
+  TOKEN_VALIDATION_ERROR = 5; // Stanza control plane responded with an error when validating token
+  TOKEN_VALIDATION_TIMEOUT = 6; // Stanza control plane request to validate token timed out
+}
+
+// Quota describes Guard reasons used by Stanza SDKs
+enum Quota {
+  QUOTA_UNSPECIFIED = 0;
+  QUOTA_NOT_EVAL = 1; // SDK never evaluated (failed before quota validation attempted)
+  QUOTA_EVAL_DISABLED = 2; // Guard configuration does not include evaluating quota
+  QUOTA_LOCAL_ERROR = 3; // SDK experienced some locally-sourced error and could not check quota
+  QUOTA_BLOCKED = 4; // Stanza control plane checked quota and blocked the request
+  QUOTA_GRANTED = 5; // Stanza control plane checked quota and granted the request
+  QUOTA_ERROR = 6; // Stanza control plane responded with an error when checking quota
+  QUOTA_TIMEOUT = 7; // Stanza control plane request to check quota timed out
+}
+
+// Mode describes what mode the Guard or Service is operating under.
+enum Mode {
+  MODE_UNSPECIFIED = 0;
+  MODE_NORMAL = 1; // Normal, Stanza may shed requests according to its configuration
+  MODE_REPORT_ONLY = 2; // Report-only, Stanza never sheds requests, but does perform all processing and records metrics about the actions that would be taken if in normal mode
+}
