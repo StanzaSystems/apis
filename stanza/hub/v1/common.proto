@@ -157,11 +157,12 @@ enum Config {
 // Local describes Guard reasons used by Stanza SDKs
 enum Local {
   LOCAL_UNSPECIFIED = 0;
-  LOCAL_NOT_EVAL = 1; // SDK never evaluated (failed before local validation attempted)
-  LOCAL_EVAL_DISABLED = 2; // No locally evaluated rules exist for this guard or it was explicitly disabled
-  LOCAL_ALLOWED = 3; // Abstract “allowed” by all locally evaluated rules
-  LOCAL_BLOCKED = 4; // Abstract “blocked” by any locally evaluated rule
-  LOCAL_ERROR = 5; // SDK experienced some locally-sourced error and could not perform local rule evaluation
+  LOCAL_NOT_SUPPORTED = 1; // SDK does not support locally evaluated rules
+  LOCAL_NOT_EVAL = 2; // SDK never evaluated (failed before local validation attempted)
+  LOCAL_EVAL_DISABLED = 3; // No locally evaluated rules exist for this guard or it was explicitly disabled
+  LOCAL_ALLOWED = 4; // Abstract “allowed” by all locally evaluated rules
+  LOCAL_BLOCKED = 5; // Abstract “blocked” by any locally evaluated rule
+  LOCAL_ERROR = 6; // SDK experienced some locally-sourced error and could not perform local rule evaluation
 }
 
 // Token describes Guard reasons used by Stanza SDKs
