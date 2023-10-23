@@ -1323,7 +1323,7 @@
       "properties": {
         "feature": {
           "type": "string",
-          "title": "optional"
+          "title": "optional - if specified then the request inherits the feature priority"
         },
         "tags": {
           "type": "array",
@@ -1331,16 +1331,16 @@
             "type": "object",
             "$ref": "#/definitions/hubv1Tag"
           },
-          "title": "optional"
+          "title": "refers to tags specified in the Guard configuration, used to fairly allocate quota"
         },
         "priorityBoost": {
           "type": "integer",
           "format": "int32",
-          "title": "optional"
+          "description": "optional - allows priority to be increased or reduced relative to normal default or feature priority."
         },
         "streamId": {
           "type": "string",
-          "description": "Unique identifier for this stream - may be meaningful or a UUID."
+          "description": "Unique identifier for this stream - may be meaningful or a UUID. Assigned by requestor."
         },
         "maxWeight": {
           "type": "number",
@@ -1353,7 +1353,6 @@
           "description": "Minimum weight that may be allocated to this stream. If this weight cannot be allocated then the stream cannot be served."
         }
       },
-      "description": "Used to increase or decrease priority of request, relative to normal feature priority.\n For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.",
       "required": [
         "streamId",
         "maxWeight",
@@ -1365,7 +1364,7 @@
       "properties": {
         "streamId": {
           "type": "string",
-          "description": "Unique identifier for this stream - may be meaningful or a UUID."
+          "description": "Unique identifier for this stream - as described in StreamRequest mesage."
         },
         "allocatedWeight": {
           "type": "number",
