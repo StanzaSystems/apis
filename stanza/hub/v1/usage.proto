@@ -65,6 +65,8 @@ message UsageTimeseries {
   repeated Tag tags = 5;
   optional string guard = 6;
   optional string service = 7;
+
+  // TODO(Laura): add a report_only mode indicator.
 }
 
 message UsageTSDataPoint {

@@ -132,7 +132,9 @@ message GuardConfig {
   bool check_quota = 5; // Boolean representing whether quota checks are enabled.
   repeated string quota_tags = 6; // The set of tags which are used for quota management. For example, a 'customer_id' tag might be used to implement per-customer quota limits. Only the tags listed here should be included in GetToken and GetTokenLease requests.
 
-  // If true the SDK should perform all load management logic and emit statistics, but all requests should proceed.
+  // If report_only is true then the SDK should perform all load management logic and emit statistics, but never actually throttle or deny requests for any reason.
+  // However, the SDK should emit accurate metrics about what actions would normally be taken if Report Only mode were not enabled. The purpose of this is to allow
+  // users to assess the impact of enabling a Guard without risking over-throttling traffic.
   // The label mode="report_only" should be set on all metrics sent to Stanza.
   bool report_only = 7;
 }
