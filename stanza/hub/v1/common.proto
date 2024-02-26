@@ -135,7 +135,8 @@ enum State {
 
 message Tag {
   string key = 1;
-  string value = 2;
+  string value = 4;
+  string scary = 2;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
